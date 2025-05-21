@@ -1,0 +1,1 @@
+# wazuh-helm-chart
