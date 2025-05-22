@@ -3,7 +3,26 @@ entries:
   wazuh:
   - apiVersion: v2
     appVersion: 4.11.1
-    created: "2025-05-22T16:00:00.000000000Z"
+    created: "2025-05-22T11:57:04.578551993Z"
+    dependencies:
+    - condition: cert-manager.enabled
+      name: cert-manager
+      repository: https://charts.jetstack.io
+      version: 1.17.1
+    description: Wazuh is a security information and event management (SIEM) solution
+      that provides security monitoring, threat detection, and incident response capabilities.
+    digest: d790e5f6eb9466251b1f177d24813f8e8a08e5a58030bff70e070850d137fbee
+    home: https://wazuh.com/
+    name: wazuh
+    sources:
+    - https://github.com/antero-software/wazuh-helm-chart
+    type: application
+    urls:
+    - https://github.com/antero-software/wazuh-helm-chart/releases/download/wazuh-0.0.2/wazuh-0.0.2.tgz
+    version: 0.0.2
+  - apiVersion: v2
+    appVersion: 4.11.1
+    created: "2025-05-22T16:00:00Z"
     description: Antero Wazuh Helm chart for Kubernetes
     digest: ca05bd7ac185d7fe38c57613672b47c245ff093328fd7db8e6b82725561ffd83
     name: wazuh
@@ -11,4 +30,4 @@ entries:
     urls:
     - https://github.com/antero-software/wazuh-helm-chart/releases/download/wazuh-0.0.1/wazuh-0.0.1.tgz
     version: 0.0.1
-generated: "2025-05-22T16:00:00.000000000Z"
+generated: "2025-05-22T11:57:04.578561821Z"
