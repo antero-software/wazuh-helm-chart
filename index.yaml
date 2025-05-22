@@ -2,7 +2,7 @@ apiVersion: v1
 entries:
   wazuh:
   - apiVersion: v2
-    appVersion: 0.0.1
+    appVersion: 4.11.1
     created: "2025-05-22T16:00:00.000000000Z"
     description: Antero Wazuh Helm chart for Kubernetes
     digest: ca05bd7ac185d7fe38c57613672b47c245ff093328fd7db8e6b82725561ffd83
