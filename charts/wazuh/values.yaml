@@ -53,8 +53,8 @@ dashboard:
     username: "kibanaserver"
     password: "kibanaserver"
   
-  config: |-
-    {{- tpl (default (include "wazuh.dashboard.config" .) .Values.wazuh.dashboard.config) . | indent 2 -}}
+  config: |
+    {{- include "wazuh.dashboard.config" . | indent 2 -}}
   
   ingress:
     enabled: false
@@ -131,9 +131,9 @@ indexer:
 
   config:
     opensearch: |-
-      {{- tpl (default (include "wazuh.indexer.opensearchConfig" .) .Values.wazuh.indexer.opensearchConfig) . | indent 2 -}}
+      {{- include "wazuh.indexer.opensearchConfig" . | indent 2 -}}
     internalUsers: |-
-      {{- tpl (default (include "wazuh.indexer.internalUsers" .) .Values.wazuh.indexer.internalUsers) . | indent 2 -}}
+      {{- include "wazuh.indexer.internalUsers" . | indent 2 -}}
 
   env:
     OPENSEARCH_JAVA_OPTS: "-Xms1g -Xmx1g -Dlog4j2.formatMsgNoLookups=true"
@@ -232,12 +232,12 @@ wazuh:
         #   hosts:
         #     - wazuh.example.com
 
-    conf: |-
-      {{- tpl (default (include "wazuh.master.conf" .) .Values.wazuh.master.conf) . | indent 2 -}}
+    conf: |
+      {{- include "wazuh.master.conf" . | indent 2 -}}
     # To be appended to the master.conf
     extraConf: ""
-    localInternalOptions: |-
-      {{- tpl (default (include "wazuh.master.local_internal_options" .) .Values.wazuh.master.localInternalOptions) . | indent 2 -}}
+    localInternalOptions: |
+      {{- include "wazuh.master.local_internal_options" . | indent 2 -}}
 
   worker:
     replicas: 1
@@ -283,9 +283,9 @@ wazuh:
       #   hosts:
       #     - wazuh.example.com
     
-    conf: |-
-      {{- tpl (default (include "wazuh.worker.conf" .) .Values.wazuh.worker.conf) . | indent 2 -}}
+    conf: |
+      {{- include "wazuh.worker.conf" . | indent 2 -}}
     # To be appended to the worker.conf
     extraConf: ""
-    localInternalOptions: |-
-      {{- tpl (default (include "wazuh.worker.local_internal_options" .) .Values.wazuh.worker.localInternalOptions) . | indent 2 -}}
+    localInternalOptions: |
+      {{- include "wazuh.worker.local_internal_options" . | indent 2 -}}
