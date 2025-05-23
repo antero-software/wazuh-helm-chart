@@ -18,11 +18,11 @@ spec:
   commonName: admin
   subject:
     organizations:
-      - Antero
+      - Company
     countries:
-      - AU
+      - US
     localities:
-      - Brisbane
+      - California
 
   issuerRef:
     name: {{ include "wazuh.fullname" . }}-ca-issuer
@@ -47,11 +47,11 @@ spec:
   commonName: dashboard
   subject:
     organizations:
-      - Antero
+      - Company
     countries:
-      - AU
+      - US
     localities:
-      - Brisbane
+      - California
 
   issuerRef:
     name: {{ include "wazuh.fullname" . }}-ca-issuer
@@ -76,11 +76,11 @@ spec:
   commonName: indexer
   subject:
     organizations:
-      - Antero
+      - Company
     countries:
-      - AU
+      - US
     localities:
-      - Brisbane
+      - California
 
   issuerRef:
     name: {{ include "wazuh.fullname" . }}-ca-issuer
@@ -105,10 +105,11 @@ spec:
   commonName: filebeat
   subject:
     organizations:
-      - Antero
+      - Company
     countries:
-      - AU
+      - US
     localities:
-      - Brisbane
+      - California
+
   issuerRef:
     name: {{ include "wazuh.fullname" . }}-ca-issuer

@@ -780,11 +780,11 @@ plugins.security.ssl.http.enabled: true
 plugins.security.ssl.transport.enforce_hostname_verification: false
 plugins.security.ssl.transport.resolve_hostname: false
 plugins.security.authcz.admin_dn:
-  - CN=admin,O=Antero,L=Brisbane,C=AU
+  - CN=admin,O=Company,L=California,C=US
 plugins.security.check_snapshot_restore_write_privileges: true
 plugins.security.enable_snapshot_restore_privilege: true
 plugins.security.nodes_dn:
-  - CN=indexer,O=Antero,L=Brisbane,C=AU
+  - CN=indexer,O=Company,L=California,C=US
 plugins.security.restapi.roles_enabled:
 - "all_access"
 - "security_rest_api_access"
