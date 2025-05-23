@@ -26,7 +26,6 @@ spec:
 
   issuerRef:
     name: {{ include "wazuh.fullname" . }}-ca-issuer
-
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
@@ -50,13 +49,12 @@ spec:
     organizations:
       - Antero
     countries:
-      - US
+      - AU
     localities:
       - Brisbane
 
   issuerRef:
     name: {{ include "wazuh.fullname" . }}-ca-issuer
-
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
@@ -80,13 +78,12 @@ spec:
     organizations:
       - Antero
     countries:
-      - US
+      - AU
     localities:
       - Brisbane
 
   issuerRef:
     name: {{ include "wazuh.fullname" . }}-ca-issuer
-
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
@@ -110,9 +107,8 @@ spec:
     organizations:
       - Antero
     countries:
-      - US
+      - AU
     localities:
       - Brisbane
-
   issuerRef:
     name: {{ include "wazuh.fullname" . }}-ca-issuer

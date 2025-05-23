@@ -5,7 +5,6 @@ metadata:
   name: {{ include "wazuh.fullname" . }}-selfsigned-issuer
 spec:
   selfSigned: {}
-
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
@@ -19,7 +18,7 @@ spec:
     organizations:
       - Antero
     countries:
-      - US
+      - AU
     localities:
       - Brisbane
   privateKey:
@@ -28,7 +27,6 @@ spec:
   duration: 87600h # 3650d
   issuerRef:
     name: {{ include "wazuh.fullname" . }}-selfsigned-issuer
-
 ---
 apiVersion: cert-manager.io/v1
 kind: Issuer

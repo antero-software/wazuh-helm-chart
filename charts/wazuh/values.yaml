@@ -8,7 +8,7 @@ imagePullSecrets: []
 
 # Kibana for elasticsearch with Wazuh plugins pre-installed
 dashboard:
-  replicas: 1
+  replicas: 2
 
   annotations: {}
   podAnnotations: {}
@@ -65,7 +65,7 @@ dashboard:
       - host: wazuh.example.com
         paths:
           - path: /
-            pathType: Prefix
+          # pathType: Prefix
     tls: []
     # - secretName: wazuh-tls
     #   hosts:
@@ -73,7 +73,7 @@ dashboard:
 
 
 indexer:
-  replicas: 2
+  replicas: 3
 
   annotations: {}
   podAnnotations: {}
@@ -240,7 +240,7 @@ wazuh:
       {{- include "wazuh.master.local_internal_options" . | indent 2 -}}
 
   worker:
-    replicas: 1
+    replicas: 2
 
     annotations: {}
     podAnnotations: {}
