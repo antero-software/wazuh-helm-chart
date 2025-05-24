@@ -49,8 +49,6 @@ spec:
             secretName: filebeat-tls
         - name: result-config
           emptyDir: {}
-        - name: shared-dir
-          emptyDir: {}
       securityContext:
         fsGroup: 101
       {{ with .Values.imagePullSecrets -}}
@@ -67,7 +65,7 @@ spec:
           resources:
             {{- toYaml .Values.wazuh.initContainer.resources | nindent 12 }}
           volumeMounts:
-            - mountPath: /etc/ossec.conf
+            - mountPath: /ossec.conf
               name: config
               readOnly: true
               subPath: worker.conf
@@ -75,10 +73,8 @@ spec:
               name: result-config
             - mountPath: /script.sh
               name: config
-              subPath: script.sh
               readOnly: true
-            - name: shared-dir
-              mountPath: /var/ossec/etc/shared/
+              subPath: script.sh
       containers:
         - name: wazuh-manager
           image: "{{ .Values.wazuh.images.repository }}:{{ .Values.wazuh.images.tag }}"
