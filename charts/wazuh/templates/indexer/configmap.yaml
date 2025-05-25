@@ -8,6 +8,6 @@ metadata:
   name: {{ include "wazuh.fullname" . }}-indexer-config
 data:
   internal_users.yml: |
-    {{ .Values.indexer.config.internalUsers | indent 2 }}
+{{ .Values.indexer.config.internalUsers | nindent 4 }}
   opensearch.yml: |
-    {{- tpl .Values.indexer.config.opensearch . | indent 2 }}
+{{ tpl .Values.indexer.config.opensearch . | nindent 4 }}
