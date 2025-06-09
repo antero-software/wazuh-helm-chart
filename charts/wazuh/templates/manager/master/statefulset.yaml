@@ -44,8 +44,6 @@ spec:
             secretName: wazuh-authd-pass
         - name: result-config
           emptyDir: {}
-        - name: shared-dir
-          emptyDir: {}
       {{ with .Values.imagePullSecrets -}}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -200,6 +198,22 @@ spec:
         resources:
           requests:
             storage: {{ .Values.wazuh.master.storageSize }}
+        {{- $storageClass := .Values.wazuh.master.storageClass }}
+        {{- if $storageClass }}
+        {{- if (eq "-" $storageClass) }}
+        storageClassName: ""
+        {{- else }}
+        storageClassName: {{ $storageClass }}
+        {{- end }}
+        {{- end }}
+    - metadata:
+        name: shared-dir
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
         {{- $storageClass := .Values.wazuh.master.storageClass }}
         {{- if $storageClass }}
         {{- if (eq "-" $storageClass) }}

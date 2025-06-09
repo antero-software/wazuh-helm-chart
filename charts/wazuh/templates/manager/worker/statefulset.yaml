@@ -49,8 +49,6 @@ spec:
             secretName: filebeat-tls
         - name: result-config
           emptyDir: {}
-        - name: shared-dir
-          emptyDir: {}
       securityContext:
         fsGroup: 101
       {{ with .Values.imagePullSecrets -}}
@@ -190,6 +188,22 @@ spec:
         resources:
           requests:
             storage: {{ .Values.wazuh.worker.storageSize }}
+        {{- $storageClass := .Values.wazuh.worker.storageClass }}
+        {{- if $storageClass }}
+        {{- if (eq "-" $storageClass) }}
+        storageClassName: ""
+        {{- else }}
+        storageClassName: {{ $storageClass }}
+        {{- end }}
+        {{- end }}
+    - metadata:
+        name: shared-dir
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
         {{- $storageClass := .Values.wazuh.worker.storageClass }}
         {{- if $storageClass }}
         {{- if (eq "-" $storageClass) }}
