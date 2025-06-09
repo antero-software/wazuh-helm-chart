@@ -44,6 +44,8 @@ spec:
             secretName: wazuh-authd-pass
         - name: result-config
           emptyDir: {}
+        - name: shared-dir
+          emptyDir: {}
       {{ with .Values.imagePullSecrets -}}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -68,6 +70,8 @@ spec:
               name: config
               readOnly: true
               subPath: script.sh
+            - name: shared-dir
+              mountPath: /var/ossec/etc/shared/
       containers:
         - name: wazuh-manager
           image: "{{ .Values.wazuh.images.repository }}:{{ .Values.wazuh.images.tag }}"
@@ -84,6 +88,8 @@ spec:
               name: config
               readOnly: true
               subPath: master_local_internal_options.conf
+            - name: shared-dir
+              mountPath: /var/ossec/etc/shared/
             # Certs
             - mountPath: /etc/ssl/root-ca.pem
               name: filebeat-certs
