@@ -12,8 +12,16 @@ data:
 
     # Ensure shared directory exists and has correct permissions
     mkdir -p /var/ossec/etc/shared
-    chown -R 1000:1000 /var/ossec/etc/shared
+    chown -R root:wazuh /var/ossec/etc/shared
     chmod -R 775 /var/ossec/etc/shared
+
+    # Create empty agent-template.conf if not exists
+    TEMPLATE_FILE="/var/ossec/etc/shared/agent-template.conf"
+    if [ ! -f "$TEMPLATE_FILE" ]; then
+      echo '<agent_config></agent_config>' > "$TEMPLATE_FILE"
+      chown root:wazuh "$TEMPLATE_FILE"
+      chmod 664 "$TEMPLATE_FILE"
+    fi
   master.conf: |
     {{- tpl .Values.wazuh.master.conf . | indent 2 }}
   master_local_internal_options.conf: |
