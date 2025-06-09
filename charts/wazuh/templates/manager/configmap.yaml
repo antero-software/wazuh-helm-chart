@@ -5,10 +5,15 @@ metadata:
 data:
   script.sh: |-
     #/bin/sh
-    # Updates each workers config to fix hostname
+    # Updates each worker's config to fix hostname
     cp /ossec.conf /wazuh-config-mount/etc/ossec.conf
     node_index=${HOSTNAME##*-}
     sed -i "s/___INDEX___/$node_index/g" /wazuh-config-mount/etc/ossec.conf
+
+    # Ensure shared directory exists and has correct permissions
+    mkdir -p /var/ossec/etc/shared
+    chown -R 1000:1000 /var/ossec/etc/shared
+    chmod -R 775 /var/ossec/etc/shared
   master.conf: |
     {{- tpl .Values.wazuh.master.conf . | indent 2 }}
   master_local_internal_options.conf: |
