@@ -4,18 +4,24 @@ metadata:
   name: {{ include "wazuh.fullname" . }}-manager-config
 data:
   script.sh: |-
-    #/bin/sh
-    # Updates each worker's config to fix hostname
-    cp /ossec.conf /wazuh-config-mount/etc/ossec.conf
-    node_index=${HOSTNAME##*-}
-    sed -i "s/___INDEX___/$node_index/g" /wazuh-config-mount/etc/ossec.conf
+    #!/bin/sh
+
+    # Only copy config if it doesn't already exist (prevents overwriting UI changes)
+    if [ ! -f /var/ossec/etc/ossec.conf ]; then
+      echo "[init] ossec.conf not found in /var/ossec/etc, copying default from /ossec.conf"
+      cp /ossec.conf /var/ossec/etc/ossec.conf
+      node_index=${HOSTNAME##*-}
+      sed -i "s/___INDEX___/$node_index/g" /var/ossec/etc/ossec.conf
+    else
+      echo "[init] ossec.conf already exists in /var/ossec/etc, skipping copy"
+    fi
 
     # Ensure shared directory exists and has correct permissions
     mkdir -p /var/ossec/etc/shared
     chown -R root:wazuh /var/ossec/etc/shared
     chmod -R 775 /var/ossec/etc/shared
 
-    # Create empty agent-template.conf if not exists
+    # Create empty agent-template.conf if it doesn't exist
     TEMPLATE_FILE="/var/ossec/etc/shared/agent-template.conf"
     if [ ! -f "$TEMPLATE_FILE" ]; then
       echo '<agent_config></agent_config>' > "$TEMPLATE_FILE"
