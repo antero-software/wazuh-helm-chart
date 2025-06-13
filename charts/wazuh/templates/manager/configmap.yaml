@@ -6,6 +6,8 @@ data:
   script.sh: |-
     #!/bin/sh
 
+    echo "[init] Starting init config setup for $(hostname)"
+
     # Only copy config if it doesn't already exist (prevents overwriting UI changes)
     if [ ! -f /var/ossec/etc/ossec.conf ]; then
       echo "[init] ossec.conf not found in /var/ossec/etc, copying default from /ossec.conf"
@@ -20,6 +22,14 @@ data:
     mkdir -p /var/ossec/etc/shared
     chown -R root:wazuh /var/ossec/etc/shared
     chmod -R 775 /var/ossec/etc/shared
+
+    # Ensure base /etc directory is writable by ossec user
+    chown root:wazuh /var/ossec/etc
+    chmod 770 /var/ossec/etc
+
+    # Fix config ownership and permissions to allow UI to take backups
+    chown ossec:ossec /var/ossec/etc/ossec.conf
+    chmod 660 /var/ossec/etc/ossec.conf
 
     # Create empty agent-template.conf if it doesn't exist
     TEMPLATE_FILE="/var/ossec/etc/shared/agent-template.conf"
