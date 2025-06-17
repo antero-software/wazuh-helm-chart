@@ -6,6 +6,12 @@ fullnameOverride: null
 
 imagePullSecrets: []
 
+serviceAccount:
+  create: true
+  name: wazuh
+  automountServiceAccountToken: false
+  annotations: {}
+
 # Kibana for elasticsearch with Wazuh plugins pre-installed
 dashboard:
   replicas: 2
