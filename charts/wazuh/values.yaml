@@ -7,7 +7,7 @@ fullnameOverride: null
 imagePullSecrets: []
 
 serviceAccount:
-  create: true
+  create: false
   name: wazuh
   automountServiceAccountToken: false
   annotations: {}
