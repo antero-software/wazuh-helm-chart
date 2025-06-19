@@ -24,6 +24,7 @@ spec:
         {{- end }}
       name: {{ include "wazuh.fullname" . }}-dashboard
     spec:
+      serviceAccountName: {{ .Values.serviceAccount.name }}
       volumes:
         - configMap:
             name: {{ include "wazuh.fullname" . }}-dashboard-config
