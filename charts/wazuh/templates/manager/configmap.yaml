@@ -22,6 +22,16 @@ data:
       chown root:wazuh "$TEMPLATE_FILE"
       chmod 664 "$TEMPLATE_FILE"
     fi
+
+    # Create AWS list directory
+    AWS_LIST_DIR="/var/ossec/etc/lists/amazon"
+    mkdir -p "$AWS_LIST_DIR"
+    # Download the missing aws-eventnames list
+    curl -sSL -o "$AWS_LIST_DIR/aws-eventnames" \
+      https://raw.githubusercontent.com/wazuh/wazuh-ruleset/refs/heads/master/lists/amazon/aws-eventnames
+    # Fix permissions
+    chown -R root:wazuh "$AWS_LIST_DIR"
+    chmod 664 "$AWS_LIST_DIR/aws-eventnames"
   master.conf: |
     {{- tpl .Values.wazuh.master.conf . | indent 2 }}
   master_local_internal_options.conf: |
