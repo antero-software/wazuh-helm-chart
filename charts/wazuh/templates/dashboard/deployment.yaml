@@ -32,9 +32,6 @@ spec:
         - name: dashboard-certs
           secret:
             secretName: dashboard-tls
-        - name: google-saml-metadata
-          configMap:
-            name: wazuh-google-saml-metadata
       {{ with .Values.imagePullSecrets -}}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -65,10 +62,6 @@ spec:
               name: dashboard-certs
               readOnly: true
               subPath: ca.crt
-            - name: google-saml-metadata
-              mountPath: /etc/wazuh-indexer/opensearch-security/Google_Metadata.xml
-              subPath: Google_Metadata.xml
-              readOnly: true
           ports:
             - containerPort: {{ .Values.dashboard.service.httpPort }}
               name: dashboard

@@ -37,6 +37,12 @@ spec:
       - configMap:
           name: {{ include "wazuh.fullname" . }}-indexer-config
         name: indexer-conf
+      - name: google-saml-metadata
+        configMap:
+          name: wazuh-google-saml-metadata
+          items:
+            - key: Google_Metadata.xml
+              path: Google_Metadata.xml
       {{ with .Values.imagePullSecrets -}}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -125,6 +131,10 @@ spec:
             - name: indexer-conf
               mountPath: /usr/share/wazuh-indexer/opensearch-security/internal_users.yml
               subPath: internal_users.yml
+              readOnly: true
+            - name: google-saml-metadata
+              mountPath: /etc/wazuh-indexer/opensearch-security/Google_Metadata.xml
+              subPath: Google_Metadata.xml
               readOnly: true
           ports:
             - containerPort: {{ .Values.indexer.service.httpPort }}
