@@ -11,3 +11,5 @@ data:
 {{ .Values.indexer.config.internalUsers | nindent 4 }}
   opensearch.yml: |
 {{ tpl .Values.indexer.config.opensearch . | nindent 4 }}
+  config.yml: |
+{{ tpl .Values.indexer.config.security . | nindent 4 }}

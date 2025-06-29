@@ -284,12 +284,6 @@ uiSettings.overrides.defaultRoute: /app/wz-home
     <timeout_allowed>yes</timeout_allowed>
   </command>
 
-  <!--
-  <active-response>
-    active-response options here
-  </active-response>
-  -->
-
   <!-- Log analysis -->
   <localfile>
     <log_format>command</log_format>
@@ -642,12 +636,6 @@ vulnerability-detection.disable_scan_manager=0
     <expect>srcip</expect>
     <timeout_allowed>yes</timeout_allowed>
   </command>
-
-  <!--
-  <active-response>
-    active-response options here
-  </active-response>
-  -->
 
   <!-- Log analysis -->
   <localfile>
