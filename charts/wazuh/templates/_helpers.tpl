@@ -35,11 +35,14 @@ opensearch.ssl.verificationMode: none
 opensearch.requestHeadersWhitelist: [ authorization,securitytenant ]
 opensearch_security.multitenancy.enabled: false
 opensearch_security.readonly_mode.roles: ["kibana_read_only"]
+opensearch_security.auth.type: ["basicauth","saml"]
+opensearch_security.auth.multiple_auth_enabled: true
 server.ssl.enabled: {{ .Values.dashboard.enable_ssl }}
 server.ssl.key: "/usr/share/wazuh-dashboard/certs/key.pem"
 server.ssl.certificate: "/usr/share/wazuh-dashboard/certs/cert.pem"
 opensearch.ssl.certificateAuthorities: ["/usr/share/wazuh-dashboard/certs/root-ca.pem"]
 uiSettings.overrides.defaultRoute: /app/wz-home
+server.xsrf.allowlist: ["/_opendistro/_security/saml/acs", "/_opendistro/_security/saml/logout", "/_opendistro/_security/saml/acs/idpinitiated"]
 {{- end }}
 
 {{/* Snippet for the configuration file used by wazuh master */}}
