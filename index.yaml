@@ -21,6 +21,56 @@ entries:
           url: https://antero-software.github.io/wazuh-helm-chart/images/threat-hunting.png
     apiVersion: v2
     appVersion: 4.11.1
+    created: "2025-06-29T09:14:53.978751246Z"
+    dependencies:
+    - condition: cert-manager.enabled
+      name: cert-manager
+      repository: https://charts.jetstack.io
+      version: 1.17.1
+    description: Wazuh is a security information and event management (SIEM) solution
+      that provides security monitoring, threat detection, and incident response capabilities.
+    digest: d133c55258c4b8441033dfbe07a4b8f19d99aa8352cdee927a450fb9ec46fb26
+    home: https://wazuh.com/
+    icon: https://antero-software.github.io/wazuh-helm-chart/images/icon.png
+    keywords:
+    - security
+    - information
+    - threat
+    - management
+    - wazuh
+    - opendistro
+    - elasticsearch
+    maintainers:
+    - email: ilker@antero.com.au
+      name: ilker
+      url: https://github.com/ilkerispir
+    name: wazuh
+    sources:
+    - https://github.com/antero-software/wazuh-helm-chart
+    type: application
+    urls:
+    - https://github.com/antero-software/wazuh-helm-chart/releases/download/wazuh-0.0.14/wazuh-0.0.14.tgz
+    version: 0.0.14
+  - annotations:
+      artifacthub.io/category: security
+      artifacthub.io/changes: |
+        - kind: changed
+          description: Update Wazuh to 4.11.1
+      artifacthub.io/links: |
+        - name: application source
+          url: https://github.com/wazuh/wazuh
+        - name: kustomize source
+          url: https://github.com/wazuh/wazuh-kubernetes
+      artifacthub.io/prerelease: "false"
+      artifacthub.io/screenshots: |
+        - title: Home Page
+          url: https://antero-software.github.io/wazuh-helm-chart/images/dashboard.png
+        - title: Agent Deployment
+          url: https://antero-software.github.io/wazuh-helm-chart/images/agent-deploy.png
+        - title: Threat Hunting
+          url: https://antero-software.github.io/wazuh-helm-chart/images/threat-hunting.png
+    apiVersion: v2
+    appVersion: 4.11.1
     created: "2025-06-20T01:36:40.949818436Z"
     dependencies:
     - condition: cert-manager.enabled
@@ -651,4 +701,4 @@ entries:
     urls:
     - https://github.com/antero-software/wazuh-helm-chart/releases/download/wazuh-0.0.1/wazuh-0.0.1.tgz
     version: 0.0.1
-generated: "2025-06-20T01:36:40.949921508Z"
+generated: "2025-06-29T09:14:53.978862745Z"
