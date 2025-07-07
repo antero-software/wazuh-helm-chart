@@ -7,3 +7,11 @@
 **/Chart.lock
 
 # End of https://www.toptal.com/developers/gitignore/api/helm
+
+
+# JetBrains IDEs
+.idea/
+*.iml
+
+# VS Code
+.vscode/
