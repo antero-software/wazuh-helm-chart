@@ -381,8 +381,15 @@ wazuh:
     extraConf: ""
     localInternalOptions: |
       {{- include "wazuh.master.local_internal_options" . | indent 2 -}}
-    extraRuleFiles:
-      - sshd_rules.xml
+    extraRules:
+      sshd_rules.xml: |
+        <group name="sshd">
+          <rule id="100001" level="10">
+            <if_sid>5710</if_sid>
+            <match>Accepted password for</match>
+            <description>Custom SSH login rule</description>
+          </rule>
+        </group>
 
   worker:
     replicas: 2
