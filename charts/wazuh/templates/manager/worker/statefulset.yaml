@@ -96,6 +96,10 @@ spec:
               subPath: master_local_internal_options.conf
             - name: shared-dir
               mountPath: /var/ossec/etc/shared/
+            - name: config
+              mountPath: /wazuh-config-mount/{{ . }}
+              subPath: {{ . }}
+              readOnly: true
             # Certs
             - mountPath: /etc/ssl/root-ca.pem
               name: filebeat-certs

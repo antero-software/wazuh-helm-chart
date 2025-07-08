@@ -4,7 +4,7 @@ metadata:
   name: {{ include "wazuh.fullname" . }}-manager-config
 data:
   script.sh: |-
-    #/bin/sh
+    #!/bin/sh
     # Updates each worker's config to fix hostname
     cp /ossec.conf /wazuh-config-mount/etc/ossec.conf
     node_index=${HOSTNAME##*-}
@@ -22,6 +22,9 @@ data:
       chown root:wazuh "$TEMPLATE_FILE"
       chmod 664 "$TEMPLATE_FILE"
     fi
+  
+    # Copy custom rule files (*.xml) to rules directory
+    cp /wazuh-config-mount/*.xml /var/ossec/etc/rules/ 2>/dev/null || true
   master.conf: |
     {{- tpl .Values.wazuh.master.conf . | indent 2 }}
   master_local_internal_options.conf: |
@@ -30,3 +33,8 @@ data:
     {{- tpl .Values.wazuh.worker.conf . | indent 2 }}
   worker_local_internal_options.conf: |
     {{- tpl .Values.wazuh.worker.localInternalOptions . | indent 2 }}
+
+  {{- range .Values.wazuh.master.extraRuleFiles }}
+  {{ . }}: |-
+{{ $.Files.Get (printf "manager/custom-rules/%s" . ) | indent 4 }}
+  {{- end }}

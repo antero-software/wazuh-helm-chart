@@ -381,6 +381,8 @@ wazuh:
     extraConf: ""
     localInternalOptions: |
       {{- include "wazuh.master.local_internal_options" . | indent 2 -}}
+    extraRuleFiles:
+      - sshd_rules.xml
 
   worker:
     replicas: 2
