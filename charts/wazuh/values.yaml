@@ -335,6 +335,9 @@ wazuh:
         cpu: 5m
         memory: 16Mi
 
+  extraRules: |
+    {{- include "wazuh.extra_rules" . | indent 2 -}}
+
   master:
     annotations: {}
     podAnnotations: {}
@@ -381,15 +384,6 @@ wazuh:
     extraConf: ""
     localInternalOptions: |
       {{- include "wazuh.master.local_internal_options" . | indent 2 -}}
-    extraRules:
-      sshd_rules.xml: |
-        <group name="sshd">
-          <rule id="100001" level="10">
-            <if_sid>5710</if_sid>
-            <match>Accepted password for</match>
-            <description>Custom SSH login rule</description>
-          </rule>
-        </group>
 
   worker:
     replicas: 2

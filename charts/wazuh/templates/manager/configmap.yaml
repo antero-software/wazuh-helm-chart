@@ -22,9 +22,6 @@ data:
       chown root:wazuh "$TEMPLATE_FILE"
       chmod 664 "$TEMPLATE_FILE"
     fi
-  
-    # Copy custom rule files (*.xml) to rules directory
-    cp /wazuh-config-mount/*.xml /var/ossec/etc/rules/ 2>/dev/null || true
   master.conf: |
     {{- tpl .Values.wazuh.master.conf . | indent 2 }}
   master_local_internal_options.conf: |
@@ -33,7 +30,5 @@ data:
     {{- tpl .Values.wazuh.worker.conf . | indent 2 }}
   worker_local_internal_options.conf: |
     {{- tpl .Values.wazuh.worker.localInternalOptions . | indent 2 }}
-  {{- range $filename, $content := .Values.wazuh.master.extraRules }}
-  {{ $filename }}: |-
-{{ $content | indent 4 }}
-  {{- end }}
+  wazuh_extra_rules.conf: |
+    {{- tpl .Values.wazuh.extraRules . | indent 2 }}
