@@ -34,7 +34,7 @@ data:
   worker_local_internal_options.conf: |
     {{- tpl .Values.wazuh.worker.localInternalOptions . | indent 2 }}
 
-  {{- range .Values.wazuh.master.extraRuleFiles }}
+{{- range .Values.wazuh.master.extraRuleFiles }}
   {{ . }}: |-
 {{ $.Files.Get (printf "manager/custom-rules/%s" . ) | indent 4 }}
-  {{- end }}
+{{- end }}
