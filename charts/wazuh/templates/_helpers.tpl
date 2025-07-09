@@ -396,6 +396,7 @@ server.xsrf.allowlist: ["/_opendistro/_security/saml/acs", "/_opendistro/_securi
 #
 # This file will not be overwritten during upgrades.
 vulnerability-detection.disable_scan_manager=0
+wazuh_modules.debug=2
 {{- end }}
 
 {{/* Snippet for the configuration file used by wazuh worker */}}
@@ -752,6 +753,7 @@ vulnerability-detection.disable_scan_manager=0
 #
 # This file will not be overwritten during upgrades.
 vulnerability-detection.disable_scan_manager=0
+wazuh_modules.debug=2
 {{- end }}
 
 {{- define "wazuh.indexer.opensearchConfig" }}
