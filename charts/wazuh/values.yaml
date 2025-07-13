@@ -61,7 +61,10 @@ dashboard:
   
   config: |
     {{- include "wazuh.dashboard.config" . | indent 2 -}}
-  
+
+  env:
+    LOG_LEVEL: "error"
+
   ingress:
     enabled: false
     ingressClassName: ""
