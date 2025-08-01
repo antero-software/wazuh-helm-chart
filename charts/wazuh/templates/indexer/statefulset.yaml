@@ -27,6 +27,8 @@ spec:
         {{- end }}
     spec:
       serviceAccountName: {{ .Values.serviceAccount.name }}
+      securityContext:
+        fsGroup: 1000
       volumes:
       - name: admin-certs
         secret:
