@@ -80,6 +80,8 @@ spec:
           env:
             - name: OPENSEARCH_JAVA_OPTS
               value: {{ .Values.indexer.env.OPENSEARCH_JAVA_OPTS | quote }}
+            - name: OPENSEARCH_JAVA_ADD_OPTS
+              value: {{ .Values.indexer.env.OPENSEARCH_JAVA_ADD_OPTS | quote }}
             - name: CLUSTER_NAME
               value: {{ .Values.indexer.env.CLUSTER_NAME | quote }}
             - name: NETWORK_HOST
