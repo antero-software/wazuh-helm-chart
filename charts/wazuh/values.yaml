@@ -283,7 +283,6 @@ indexer:
 
   env:
     OPENSEARCH_JAVA_OPTS: "-Xms1g -Xmx1g -Dlog4j2.formatMsgNoLookups=true"
-    OPENSEARCH_JAVA_ADD_OPTS: "-Djava.security.manager="
     CLUSTER_NAME: "wazuh"
     NETWORK_HOST: "0.0.0.0"
     DISABLE_INSTALL_DEMO_CONFIG: "true"
