@@ -160,7 +160,7 @@ spec:
               subPath: config.yml
               readOnly: true
             - name: saml-metadata
-              mountPath: /etc/wazuh-indexer/opensearch-security/Google_Metadata.xml
+              mountPath: /usr/share/wazuh-indexer/config/Google_Metadata.xml
               subPath: Google_Metadata.xml
               readOnly: true
           ports:
