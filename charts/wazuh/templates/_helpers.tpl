@@ -34,6 +34,7 @@ opensearch.hosts: "https://indexer:{{ .Values.indexer.service.httpPort }}"
 opensearch.ssl.verificationMode: none
 opensearch.requestHeadersWhitelist: [ authorization,securitytenant ]
 opensearch_security.multitenancy.enabled: false
+opensearch_security.auth.anonymous_auth_enabled: false
 opensearch_security.readonly_mode.roles: ["kibana_read_only"]
 opensearch_security.auth.type: ["basicauth","saml"]
 opensearch_security.auth.multiple_auth_enabled: true
