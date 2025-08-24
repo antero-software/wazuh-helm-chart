@@ -62,6 +62,15 @@ dashboard:
   config: |
     {{- include "wazuh.dashboard.config" . | indent 2 -}}
 
+  authConfig: |
+    hosts:
+      - default:
+          url: https://127.0.0.1
+          port: 55000
+          username: wazuh-wui
+          password: MyS3cr37P450r.*-
+          run_as: false
+
   env:
     LOG_LEVEL: "error"
 
