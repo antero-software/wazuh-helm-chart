@@ -62,7 +62,7 @@ dashboard:
   config: |
     {{- include "wazuh.dashboard.config" . | indent 2 -}}
 
-  authConfig: |-
+  authConfig:
     hosts:
       - default:
           url: "https://127.0.0.1"
