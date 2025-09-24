@@ -803,7 +803,7 @@ compatibility.override_main_response_version: true
 
   <rule id="100018" level="0">
     <if_sid>100010</if_sid>
-    <id>^2|^3</id>
+    <id>^(2|3)</id>
     <compiled_rule>is_simple_http_request</compiled_rule>
     <description>Ignored URLs (simple queries).</description>
   </rule>
@@ -824,23 +824,28 @@ compatibility.override_main_response_version: true
 
   <rule id="100013" level="7">
     <if_sid>100010,100018</if_sid>
-    <field name="httpRequest.args">=select%20|select+|insert%20|%20from%20|%20where%20|union%20|union+|where+|null,null|xp_cmdshell</field>
+    <field name="http.request.args"><![CDATA[
+      =select%20|select\+|insert%20|%20from%20|%20where%20|union%20|union\+|where\+|null,null|xp_cmdshell
+    ]]></field>
     <description>SQL injection attempt.</description>
     <mitre>
       <id>T1190</id>
     </mitre>
-    <group>attack,sql_injection,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+    <group>attack,sql_injection, ...</group>
   </rule>
 
   <rule id="100014" level="6">
     <if_sid>100010</if_sid>
 
-    <!-- Attempt to do directory transversal, simple sql injections,
-      -  or access to the etc or bin directory (unix). -->
-    <field name="httpRequest.uri">%027|%00|%01|%7f|%2E%2E|%0A|%0D|../..|..\..|echo;|</field>
-    <field name="httpRequest.args">cmd.exe|root.exe|_mem_bin|msadc|/winnt/|/boot.ini|</field>
-    <field name="httpRequest.args">/x90/|default.ida|/sumthin|nsiislog.dll|chmod%|wget%|cd%20|</field>
-    <field name="httpRequest.args">exec%20|../..//|%5C../%5C|././././|2e%2e%5c%2e|\x5C\x5C</field>
+    <field name="http.request.uri"><![CDATA[
+      %027|%00|%01|%7f|%2E%2E|%0A|%0D|\.\./\.\.|\\\.\.|echo;
+    ]]></field>
+
+    <field name="http.request.args"><![CDATA[
+      cmd.exe|root.exe|_mem_bin|msadc|/winnt/|/boot.ini|/x90/|default.ida|/sumthin|nsiislog.dll|
+      chmod%|wget%|cd%20|exec%20|\.\./\.\.//|%5C\.\./%5C|(\./){4}|2e%2e%5c%2e|\\x5C\\x5C
+    ]]></field>
+
     <description>Common web attack.</description>
     <mitre>
       <id>T1055</id>
@@ -852,15 +857,12 @@ compatibility.override_main_response_version: true
 
   <rule id="100015" level="6">
     <if_sid>100010</if_sid>
-    <!--
-    <url>%3Cscript|%3C%2Fscript|script>|script%3E|SRC=javascript|IMG%20|</url>
-    <url>%20ONLOAD=|INPUT%20|iframe%20</url>
-    -->
-    <field name="httpRequest.args">%3Cscript|%3C%2Fscript|script>|script%3E|SRC=javascript|IMG%20|%20ONLOAD=|INPUT%20|iframe%20</field>
-    <field name="httpRequest.uri">%3Cscript|%3C%2Fscript|script>|script%3E|SRC=javascript|IMG%20|%20ONLOAD=|INPUT%20|iframe%20</field>
-    <!-- <field name="httpRequest.args">%3Cscript|%3C%2Fscript|script>|script%3E|SRC=javascript|IMG%20|%20ONLOAD=|INPUT%20|iframe%20</field>>
-    <field name="httpRequest.args">%20ONLOAD=|INPUT%20|iframe%20</field>	    
-	    -->
+    <field name="http.request.args"><![CDATA[
+      %3Cscript|%3C%2Fscript|script>|script%3E|SRC=javascript|IMG%20|%20ONLOAD=|INPUT%20|iframe%20
+    ]]></field>
+    <field name="http.request.uri"><![CDATA[
+      %3Cscript|%3C%2Fscript|script>|script%3E|SRC=javascript|IMG%20|%20ONLOAD=|INPUT%20|iframe%20
+    ]]></field>
     <description>XSS (Cross Site Scripting) attempt.</description>
     <mitre>
       <id>T1059.007</id>
