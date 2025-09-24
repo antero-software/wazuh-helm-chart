@@ -793,492 +793,359 @@ cluster.routing.allocation.disk.threshold_enabled: false
 compatibility.override_main_response_version: true
 {{- end }}
 {{- define "wazuh.extra_rules" }}
-<!--
-  -  Copyright (C) 2015, Wazuh Inc.
--->
-
-<!--
-  SSH rules ID: 5700 - 5764
--->
-
-<group name="syslog,sshd,">
-
-  <rule id="5700" level="0" noalert="1">
-    <decoded_as>sshd</decoded_as>
-    <description>SSHD messages grouped.</description>
+<group name="aws,amazon,cloudwatch,">
+  <rule id="100010" level="3">
+    <decoded_as>json</decoded_as>
+    <field name="httpSourceName">CF</field>
+    <description>Cloudwatch Logs</description>
   </rule>
 
-  <rule id="5701" level="8">
-    <if_sid>5700</if_sid>
-    <match>Bad protocol version identification</match>
-    <description>sshd: Possible attack on the ssh server (or version gathering).</description>
+
+  <rule id="100018" level="0">
+    <if_sid>100010</if_sid>
+    <id>^2|^3</id>
+    <compiled_rule>is_simple_http_request</compiled_rule>
+    <description>Ignored URLs (simple queries).</description>
+  </rule>
+
+  <rule id="100011" level="5">
+    <if_sid>100010</if_sid>
+    <id>^4</id>
+    <description>Web server 400 error code.</description>
+    <group>attack,pci_dss_6.5,pci_dss_11.4,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+
+  <rule id="100012" level="0">
+    <if_sid>100011</if_sid>
+    <field name="httpRequest.args">.jpg$|.gif$|favicon.ico$|.png$|robots.txt$|.css$|.js$|.jpeg$</field>
+    <compiled_rule>is_simple_http_request</compiled_rule>
+    <description>Ignored extensions on 400 error codes.</description>
+  </rule>
+
+  <rule id="100013" level="7">
+    <if_sid>100010,100018</if_sid>
+    <field name="httpRequest.args">=select%20|select+|insert%20|%20from%20|%20where%20|union%20|union+|where+|null,null|xp_cmdshell</field>
+    <description>SQL injection attempt.</description>
     <mitre>
       <id>T1190</id>
     </mitre>
-    <group>gdpr_IV_35.7.d,gpg13_4.12,nist_800_53_SI.4,pci_dss_11.4,recon,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+    <group>attack,sql_injection,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
   </rule>
 
-  <rule id="5702" level="5">
-    <if_sid>5700</if_sid>
-    <match>^reverse mapping</match>
-    <regex>failed - POSSIBLE BREAK</regex>
-    <description>sshd: Reverse lookup error (bad ISP or attack).</description>
-    <group>gdpr_IV_35.7.d,gpg13_4.12,nist_800_53_SI.4,pci_dss_11.4,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
-  </rule>
+  <rule id="100014" level="6">
+    <if_sid>100010</if_sid>
 
-  <rule id="5703" level="10" frequency="6" timeframe="360">
-    <if_matched_sid>5702</if_matched_sid>
-    <same_source_ip />
-    <description>sshd: Possible breakin attempt (high number of reverse lookup errors).</description>
+    <!-- Attempt to do directory transversal, simple sql injections,
+      -  or access to the etc or bin directory (unix). -->
+    <field name="httpRequest.uri">%027|%00|%01|%7f|%2E%2E|%0A|%0D|../..|..\..|echo;|</field>
+    <field name="httpRequest.args">cmd.exe|root.exe|_mem_bin|msadc|/winnt/|/boot.ini|</field>
+    <field name="httpRequest.args">/x90/|default.ida|/sumthin|nsiislog.dll|chmod%|wget%|cd%20|</field>
+    <field name="httpRequest.args">exec%20|../..//|%5C../%5C|././././|2e%2e%5c%2e|\x5C\x5C</field>
+    <description>Common web attack.</description>
     <mitre>
-      <id>T1110</id>
+      <id>T1055</id>
+      <id>T1083</id>
+      <id>T1190</id>
     </mitre>
-    <group>gdpr_IV_35.7.d,gpg13_4.12,nist_800_53_SI.4,pci_dss_11.4,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+    <group>attack,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
   </rule>
 
-  <rule id="5704" level="4">
-    <if_sid>5700</if_sid>
-    <match>fatal: Timeout before authentication for</match>
-    <description>sshd: Timeout while logging in.</description>
+  <rule id="100015" level="6">
+    <if_sid>100010</if_sid>
+    <!--
+    <url>%3Cscript|%3C%2Fscript|script>|script%3E|SRC=javascript|IMG%20|</url>
+    <url>%20ONLOAD=|INPUT%20|iframe%20</url>
+    -->
+    <field name="httpRequest.args">%3Cscript|%3C%2Fscript|script>|script%3E|SRC=javascript|IMG%20|%20ONLOAD=|INPUT%20|iframe%20</field>
+    <field name="httpRequest.uri">%3Cscript|%3C%2Fscript|script>|script%3E|SRC=javascript|IMG%20|%20ONLOAD=|INPUT%20|iframe%20</field>
+    <!-- <field name="httpRequest.args">%3Cscript|%3C%2Fscript|script>|script%3E|SRC=javascript|IMG%20|%20ONLOAD=|INPUT%20|iframe%20</field>>
+    <field name="httpRequest.args">%20ONLOAD=|INPUT%20|iframe%20</field>	    
+	    -->
+    <description>XSS (Cross Site Scripting) attempt.</description>
+    <mitre>
+      <id>T1059.007</id>
+    </mitre>
+    <group>attack,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.7,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
   </rule>
 
-  <rule id="5705" level="10" frequency="6" timeframe="360">
-    <if_matched_sid>5704</if_matched_sid>
-    <description>sshd: Possible scan or breakin attempt (high number of login timeouts).</description>
+  <rule id="100016" level="6">
+    <if_sid>100013, 100014, 100015</if_sid>
+    <id>^200</id>
+    <description>A web attack returned code 200 (success).</description>
     <mitre>
       <id>T1190</id>
-      <id>T1110</id>
     </mitre>
-    <group>gdpr_IV_35.7.d,gpg13_4.12,nist_800_53_SI.4,pci_dss_11.4,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+    <group>attack,pci_dss_6.5,pci_dss_11.4,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
   </rule>
 
-  <rule id="5706" level="6">
-    <if_sid>5700</if_sid>
-    <match>Did not receive identification string from</match>
-    <description>sshd: insecure connection attempt (scan).</description>
-    <mitre>
-      <id>T1021.004</id>
-    </mitre>
-    <group>gdpr_IV_35.7.d,gpg13_4.12,nist_800_53_SI.4,pci_dss_11.4,recon,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
-  </rule>
-
-  <rule id="5707" level="14">
-    <if_sid>5700</if_sid>
-    <match>fatal: buffer_get_string: bad string</match>
-    <description>sshd: OpenSSH challenge-response exploit.</description>
+  <rule id="100110" level="6">
+    <if_sid>100010</if_sid>
+    <field name="httpRequest.args">?-d|?-s|?-a|?-b|?-w</field>
+    <field name="httpRequest.uri">?-d|?-s|?-a|?-b|?-w</field>
+    <description>PHP CGI-bin vulnerability attempt.</description>
     <mitre>
       <id>T1210</id>
+    </mitre>
+    <group>attack,pci_dss_6.5,pci_dss_11.4,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+
+  <rule id="100019" level="6">
+    <if_sid>100010</if_sid>
+    <field name="httpRequest.args">+as+varchar</field>
+    <regex>%2Bchar\(\d+\)%2Bchar\(\d+\)%2Bchar\(\d+\)%2Bchar\(\d+\)%2Bchar\(\d+\)%2Bchar\(\d+\)</regex>
+    <description>MSSQL Injection attempt (/ur.php, urchin.js)</description>
+    <mitre>
+      <id>T1190</id>
+    </mitre>
+    <group>attack,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+
+
+  <!-- If your site have a search engine, you may need to ignore
+    - it in here.
+    -->
+  <rule id="100017" level="0">
+    <if_sid>100013, 100014, 100015</if_sid>
+    <field name="httpRequest.uri">^/search.php?search=|^/index.php?searchword=</field>
+    <description>Ignored URLs for the web attacks</description>
+  </rule>
+
+  <rule id="100115" level="13" maxsize="7900">
+    <if_sid>100010</if_sid>
+    <description>URL too long. Higher than allowed on most </description>
+    <description>browsers. Possible attack.</description>
+    <mitre>
+      <id>T1499</id>
+    </mitre>
+    <group>invalid_access,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.8,pci_dss_10.2.4,gdpr_IV_35.7.d,hipaa_164.312.b,nist_800_53_SA.11,nist_800_53_SI.4,nist_800_53_AU.14,nist_800_53_AC.7,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+
+
+  <!-- 500 error codes, server error
+    - http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
+    -->
+  <rule id="100020" level="5">
+    <if_sid>100010</if_sid>
+    <id>^50</id>
+    <description>Web server 500 error code (server error).</description>
+  </rule>
+
+  <rule id="100021" level="4">
+    <if_sid>100020</if_sid>
+    <id>^501</id>
+    <description>Web server 501 error code (Not Implemented).</description>
+  </rule>
+
+  <rule id="100022" level="5">
+    <if_sid>100020</if_sid>
+    <id>^500</id>
+    <description>Web server 500 error code (Internal Error).</description>
+    <group>system_error,</group>
+  </rule>
+
+  <rule id="100023" level="4">
+    <if_sid>100020</if_sid>
+    <id>^503</id>
+    <description>Web server 503 error code (Service unavailable).</description>
+  </rule>
+
+
+  <!-- Rules to ignore crawlers -->
+  <rule id="100040" level="0">
+    <if_sid>100011</if_sid>
+    <compiled_rule>is_valid_crawler</compiled_rule>
+    <description>Ignoring google/msn/yahoo bots.</description>
+  </rule>
+
+  <!-- Ignoring nginx 499's -->
+  <rule id="100041" level="0">
+    <if_sid>100011</if_sid>
+    <id>^499</id>
+    <description>Ignored 499's on nginx.</description>
+  </rule>
+
+
+  <rule id="100051" level="10" frequency="14" timeframe="90">
+    <if_matched_sid>100011</if_matched_sid>
+    <same_source_ip />
+    <description>Multiple web server 400 error codes </description>
+    <description>from same source ip.</description>
+    <mitre>
+      <id>T1595.002</id>
+    </mitre>
+    <group>web_scan,recon,pci_dss_6.5,pci_dss_11.4,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+
+  <rule id="100052" level="10" frequency="8" timeframe="120">
+    <if_matched_sid>100013</if_matched_sid>
+    <same_source_ip />
+    <description>Multiple SQL injection attempts from same </description>
+    <description>source ip.</description>
+    <mitre>
+      <id>T1055</id>
+    </mitre>
+    <group>attack,sql_injection,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+
+  <rule id="100053" level="10" frequency="10" timeframe="120">
+    <if_matched_sid>100014</if_matched_sid>
+    <same_source_ip />
+    <description>Multiple common web attacks from same source ip.</description>
+    <mitre>
+      <id>T1055</id>
+      <id>T1083</id>
+    </mitre>
+    <group>attack,pci_dss_6.5,pci_dss_11.4,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+
+  <rule id="100054" level="10" frequency="10" timeframe="120">
+    <if_matched_sid>100015</if_matched_sid>
+    <same_source_ip />
+    <description>Multiple XSS (Cross Site Scripting) attempts </description>
+    <description>from same source ip.</description>
+    <mitre>
+      <id>T1059</id>
+    </mitre>
+    <group>attack,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.7,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+
+  <rule id="100061" level="10" frequency="14" timeframe="120">
+    <if_matched_sid>100021</if_matched_sid>
+    <same_source_ip />
+    <description>Multiple web server 501 error code (Not Implemented).</description>
+    <mitre>
+      <id>T1595.002</id>
+    </mitre>
+    <group>web_scan,recon,pci_dss_6.5,pci_dss_11.4,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+
+  <rule id="100062" level="10" frequency="14" timeframe="120">
+    <if_matched_sid>100022</if_matched_sid>
+    <same_source_ip />
+    <description>Multiple web server 500 error code (Internal Error).</description>
+    <group>system_error,pci_dss_6.5,pci_dss_10.6.1,gdpr_IV_35.7.d,hipaa_164.312.b,nist_800_53_SA.11,nist_800_53_AU.6,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+
+  <rule id="100063" level="10" frequency="14" timeframe="120">
+    <if_matched_sid>100023</if_matched_sid>
+    <same_source_ip />
+    <description>Multiple web server 503 error code (Service unavailable).</description>
+    <mitre>
+      <id>T1498</id>
+    </mitre>
+    <group>web_scan,recon,pci_dss_6.5,pci_dss_11.4,pci_dss_10.6.1,gdpr_IV_35.7.d,hipaa_164.312.b,nist_800_53_SA.11,nist_800_53_SI.4,nist_800_53_AU.6,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+
+  <rule id="100064" level="6">
+    <if_sid>100010</if_sid>
+    <field name="httpRequest.args">=%27|select%2B|insert%2B|%2Bfrom%2B|%2Bwhere%2B|%2Bunion%2B</field>
+    <description>SQL injection attempt.</description>
+    <mitre>
+      <id>T1055</id>
+      <id>T1190</id>
+    </mitre>
+    <group>attack,sqlinjection,attack,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+
+  <rule id="100065" level="6">
+    <if_sid>100010</if_sid>
+    <field name="httpRequest.args">%EF%BC%87|%EF%BC%87|%EF%BC%87|%2531|%u0053%u0045</field>
+    <description>SQL injection attempt.</description>
+    <mitre>
+      <id>T1055</id>
+      <id>T1190</id>
+    </mitre>
+    <group>attack,sqlinjection,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+
+<!--
+    Shellshock detected
+    Pattern: "(){:;};" (with spaces)
+    Decoder: web-accesslog_decoders.xml
+
+    Examples:
+    192.168.2.100 - - [02/Nov/2015:01:35:55 +0100] "GET /cgi-bin/test.sh HTTP/1.1" 404 292 "-" "() { :;};/usr/bin/perl ..."
+    192.168.2.100 - - [02/Nov/2015:01:35:55 +0100] "GET /cgi-bin/test.sh HTTP/1.1" 200 292 "-" "() { :;};/usr/bin/perl ..."
+    192.168.2.100 - - [02/Nov/2015:01:35:55 +0100] "GET /cgi-bin/test.sh HTTP/1.1" 200 292 "-" "() { foo:; };/usr/bin/perl ..."
+    192.168.2.100 - - [02/Nov/2015:01:35:55 +0100] "GET /cgi-bin/test.sh HTTP/1.1" 200 292 "-" "() { ignored; };/usr/bin/perl ..."
+    192.168.2.100 - - [02/Nov/2015:01:35:55 +0100] "GET /cgi-bin/test.sh HTTP/1.1" 200 292 "-" "() { gry; };/usr/bin/perl ..."
+
+    192.168.2.100 - - [02/Nov/2015:01:35:55 +0100] "GET /cgi-bin/test.sh HTTP/1.1" 200 292 "-" "() { _; } >_[$($())] { /usr/bin/perl ... }"
+    192.168.2.100 - - [02/Nov/2015:01:35:55 +0100] "GET /cgi-bin/test.sh HTTP/1.1" 200 292 "-" "() { _; foo; } >_[$($())] { /usr/bin/perl ... }"
+    -->
+
+  <!--
+    Shellshock attempt
+    Code: 4xx, 5xx
+  -->
+  <rule id="100066" level="6">
+    <if_sid>100011, 100020</if_sid>
+    <regex>"\(\)\s*{\s*\w*:;\s*}\s*;|"\(\)\s*{\s*\w*;\s*}\s*;</regex>
+    <description>Shellshock attack attempt</description>
+    <mitre>
       <id>T1068</id>
+      <id>T1190</id>
     </mitre>
-    <group>exploit_attempt,gdpr_IV_35.7.d,gpg13_4.12,nist_800_53_SI.4,nist_800_53_SI.2,pci_dss_11.4,pci_dss_6.2,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+    <info type="cve">CVE-2014-6271</info>
+    <info type="link">https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-6271</info>
+    <group>attack,pci_dss_11.4,gdpr_IV_35.7.d,nist_800_53_SI.4,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
   </rule>
 
-  <rule id="5709" level="0">
-    <if_sid>5700</if_sid>
-    <match>error: Could not get shadow information for NOUSER|</match>
-    <match>fatal: Read from socket failed: |error: ssh_msg_send: write|</match>
-    <match>^syslogin_perform_logout: |^pam_succeed_if(sshd:auth): error retrieving information about user|can't verify hostname: getaddrinfo</match>
-    <description>sshd: Useless SSHD message without an user/ip and context.</description>
-  </rule>
-
-  <rule id="5710" level="5">
-    <if_sid>5700</if_sid>
-    <match>illegal user|invalid user</match>
-    <description>sshd: Attempt to login using a non-existent user</description>
+  <rule id="100067" level="6">
+    <if_sid>100011, 100020</if_sid>
+    <regex>"\(\)\s*{\s*_;\.*}\s*>_[\$\(\$\(\)\)]\s*{</regex>
+    <description>Shellshock attack attempt</description>
     <mitre>
-      <id>T1110.001</id>
-      <id>T1021.004</id>
+      <id>T1068</id>
+      <id>T1190</id>
     </mitre>
-    <group>authentication_failed,gdpr_IV_35.7.d,gdpr_IV_32.2,gpg13_7.1,hipaa_164.312.b,invalid_login,nist_800_53_AU.14,nist_800_53_AC.7,nist_800_53_AU.6,pci_dss_10.2.4,pci_dss_10.2.5,pci_dss_10.6.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+    <info type="cve">CVE-2014-6278</info>
+    <info type="link">https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-6278</info>
+    <group>attack,pci_dss_11.4,gdpr_IV_35.7.d,nist_800_53_SI.4,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
   </rule>
 
-  <rule id="5711" level="0">
-    <if_sid>5700</if_sid>
-    <match>authentication failure; logname= uid=0 euid=0 tty=ssh|</match>
-    <match>input_userauth_request: invalid user|</match>
-    <match>PAM: User not known to the underlying authentication module for illegal user|</match>
-    <match>error retrieving information about user</match>
-    <description>sshd: Useless/Duplicated SSHD message without a user/ip.</description>
-  </rule>
-
-  <rule id="5712" level="10" frequency="8" timeframe="120" ignore="60">
-    <if_matched_sid>5710</if_matched_sid>
-    <same_source_ip />
-    <description>sshd: brute force trying to get access to the system. Non existent user.</description>
+  <!--
+    Shellshock detected
+    Code: 2xx, 3xx
+  -->
+  <rule id="100068" level="15">
+    <if_sid>100018</if_sid>
+    <regex>"\(\)\s*{\s*\w*:;\s*}\s*;|"\(\)\s*{\s*\w*;\s*}\s*;</regex>
+    <description>Shellshock attack detected</description>
     <mitre>
-      <id>T1110</id>
+      <id>T1068</id>
+      <id>T1190</id>
     </mitre>
-    <group>authentication_failures,gdpr_IV_35.7.d,gdpr_IV_32.2,hipaa_164.312.b,nist_800_53_SI.4,nist_800_53_AU.14,nist_800_53_AC.7,pci_dss_11.4,pci_dss_10.2.4,pci_dss_10.2.5,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+    <info type="cve">CVE-2014-6271</info>
+    <info type="link">https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-6271</info>
+    <group>attack,pci_dss_11.4,gdpr_IV_35.7.d,nist_800_53_SI.4,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
   </rule>
 
-  <rule id="5713" level="6">
-    <if_sid>5700</if_sid>
-    <match>Corrupted check bytes on</match>
-    <description>sshd: Corrupted bytes on SSHD.</description>
-  </rule>
-
-  <rule id="5714" level="14" timeframe="120" frequency="3">
-    <if_matched_sid>5713</if_matched_sid>
-    <match>Local: crc32 compensation attack</match>
-    <info type="cve">2001-0144</info>
-    <info type="link">http://www.securityfocus.com/bid/2347/info/</info>
-    <description>sshd: SSH CRC-32 Compensation attack</description>
+  <rule id="100069" level="15">
+    <if_sid>100018</if_sid>
+    <regex>"\(\)\s*{\s*_;\.*}\s*>_[\$\(\$\(\)\)]\s*{</regex>
+    <description>Shellshock attack detected</description>
     <mitre>
-      <id>T1210</id>
+      <id>T1068</id>
+      <id>T1190</id>
     </mitre>
-    <group>exploit_attempt,gdpr_IV_35.7.d,gpg13_4.12,nist_800_53_SI.4,nist_800_53_SI.2,pci_dss_11.4,pci_dss_6.2,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+    <info type="cve">CVE-2014-6278</info>
+    <info type="link">https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-6278</info>
+    <group>attack,pci_dss_11.4,gdpr_IV_35.7.d,nist_800_53_SI.4,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
   </rule>
 
-  <rule id="5715" level="3">
-    <if_sid>5700</if_sid>
-    <match>^Accepted|authenticated.$</match>
-    <description>sshd: authentication success.</description>
-    <mitre>
-      <id>T1078</id>
-      <id>T1021</id>
-    </mitre>
-    <group>authentication_success,gdpr_IV_32.2,gpg13_7.1,gpg13_7.2,hipaa_164.312.b,nist_800_53_AU.14,nist_800_53_AC.7,pci_dss_10.2.5,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  <rule id="100070" level="6">
+    <if_sid>100010</if_sid>
+    <field name="httpRequest.args">%2csleep|sysdate()|nslookup%20dns.sqli</field>
+    <description>SQL injection attempt.</description>
+    <group>attack,sqlinjection,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,</group>
   </rule>
 
-  <rule id="5716" level="5">
-    <if_sid>5700</if_sid>
-    <match>^Failed|^error: PAM: Authentication</match>
-    <description>sshd: authentication failed.</description>
-    <mitre>
-      <id>T1110</id>
-    </mitre>
-    <group>authentication_failed,gdpr_IV_35.7.d,gdpr_IV_32.2,gpg13_7.1,hipaa_164.312.b,nist_800_53_AU.14,nist_800_53_AC.7,pci_dss_10.2.4,pci_dss_10.2.5,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
-  </rule>
-
-  <rule id="5717" level="4">
-    <if_sid>5700</if_sid>
-    <match>error: Bad prime description in line</match>
-    <description>sshd: configuration error (moduli).</description>
-  </rule>
-
-  <rule id="5718" level="5">
-    <if_sid>5700</if_sid>
-    <match>not allowed because</match>
-    <description>sshd: Attempt to login using a denied user.</description>
-    <mitre>
-      <id>T1110</id>
-    </mitre>
-    <group>gdpr_IV_35.7.d,gdpr_IV_32.2,gpg13_7.1,hipaa_164.312.b,invalid_login,nist_800_53_AU.14,nist_800_53_AC.7,pci_dss_10.2.4,pci_dss_10.2.5,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
-  </rule>
-
-  <rule id="5719" level="10" frequency="8" timeframe="120" ignore="60">
-    <if_matched_sid>5718</if_matched_sid>
-    <description>sshd: Multiple access attempts using a denied user.</description>
-    <mitre>
-      <id>T1110</id>
-    </mitre>
-    <group>gdpr_IV_35.7.d,gdpr_IV_32.2,gpg13_7.1,hipaa_164.312.b,invalid_login,nist_800_53_AU.14,nist_800_53_AC.7,nist_800_53_SI.4,pci_dss_10.2.4,pci_dss_10.2.5,pci_dss_11.4,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
-  </rule>
-
-  <rule id="5720" level="10" frequency="8">
-    <if_matched_sid>5716</if_matched_sid>
-    <same_source_ip />
-    <description>sshd: Multiple authentication failures.</description>
-    <mitre>
-      <id>T1110</id>
-    </mitre>
-    <group>authentication_failures,gdpr_IV_35.7.d,gdpr_IV_32.2,gpg13_7.1,hipaa_164.312.b,nist_800_53_AU.14,nist_800_53_AC.7,nist_800_53_SI.4,pci_dss_10.2.4,pci_dss_10.2.5,pci_dss_11.4,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
-  </rule>
-
-  <rule id="5721" level="0">
-    <if_sid>5700</if_sid>
-    <match>Received disconnect from</match>
-    <description>sshd: System disconnected from sshd.</description>
-  </rule>
-
-  <rule id="5722" level="0">
-    <if_sid>5700</if_sid>
-    <match>Connection closed</match>
-    <description>sshd: ssh connection closed.</description>
-    <group>gdpr_IV_32.2,hipaa_164.312.b,nist_800_53_AU.14,nist_800_53_AC.7,pci_dss_10.2.5,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
-  </rule>
-
-  <rule id="5723" level="0">
-    <if_sid>5700</if_sid>
-    <match>error: buffer_get_bignum2_ret: negative numbers not supported</match>
-    <info>This maybe a bad key in authorized_keys.</info>
-    <description>sshd: key error.</description>
-    <group>gdpr_IV_35.7.d,gpg13_4.3,hipaa_164.312.a.2.IV,hipaa_164.312.e.1,hipaa_164.312.e.2.I,hipaa_164.312.e.2.II,hipaa_164.312.b,nist_800_53_SC.8,nist_800_53_AU.6,pci_dss_4.1,pci_dss_10.6.1,tsc_CC6.7,tsc_CC7.2,tsc_CC7.3,</group>
-  </rule>
-
-  <rule id="5724" level="0">
-    <if_sid>5700</if_sid>
-    <match>fatal: buffer_get_bignum2: buffer error</match>
-    <info>This error may relate to ssh key handling.</info>
-    <description>sshd: key error.</description>
-    <group>gdpr_IV_35.7.d,gpg13_4.3,hipaa_164.312.a.2.IV,hipaa_164.312.e.1,hipaa_164.312.e.2.I,hipaa_164.312.e.2.II,hipaa_164.312.b,nist_800_53_SC.8,nist_800_53_AU.6,pci_dss_4.1,pci_dss_10.6.1,tsc_CC6.7,tsc_CC7.2,tsc_CC7.3,</group>
-  </rule>
-
-  <rule id="5725" level="0">
-    <if_sid>5700</if_sid>
-    <match>fatal: Write failed: Host is down</match>
-    <description>sshd: Host ungracefully disconnected.</description>
-  </rule>
-
-  <rule id="5726" level="5">
-    <if_sid>5700</if_sid>
-    <match>error: PAM: Module is unknown for</match>
-    <description>sshd: Unknown PAM module, PAM misconfiguration.</description>
-  </rule>
-
-  <rule id="5727" level="0">
-    <if_sid>5700</if_sid>
-    <match>failed: Address already in use.</match>
-    <description>sshd: Attempt to start sshd when something already bound to the port.</description>
-    <group>gdpr_IV_35.7.d,gpg13_4.3,hipaa_164.312.b,nist_800_53_AU.6,nist_800_53_CM.1,pci_dss_10.6.1,pci_dss_2.2.3,tsc_CC7.2,tsc_CC7.3,</group>
-  </rule>
-
-  <rule id="5728" level="4">
-    <if_sid>5700</if_sid>
-    <match>Authentication service cannot retrieve user credentials</match>
-    <info>May be related to PAM module errors.</info>
-    <description>sshd: Authentication services were not able to retrieve user credentials.</description>
-    <group>authentication_failed,gdpr_IV_35.7.d,gdpr_IV_32.2,gpg13_7.1,hipaa_164.312.b,nist_800_53_AU.14,nist_800_53_AC.7,pci_dss_10.2.5,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
-  </rule>
-
-  <rule id="5729" level="0">
-    <if_sid>5700</if_sid>
-    <match>debug1: attempt</match>
-    <description>sshd: Debug message.</description>
-  </rule>
-
-  <rule id="5730" level="4">
-    <if_sid>5700</if_sid>
-    <regex>error: connect to \S+ port \d+ failed: Connection refused</regex>
-    <description>sshd: SSHD is not accepting connections.</description>
-    <group>gdpr_IV_35.7.d,gpg13_4.3,hipaa_164.312.b,nist_800_53_AU.6,pci_dss_10.6.1,tsc_CC7.2,tsc_CC7.3,</group>
-  </rule>
-
-  <rule id="5731" level="6">
-    <if_sid>5700</if_sid>
-    <match>AKASSH_Version_Mapper1.</match>
-    <description>sshd: SSH Scanning.</description>
-    <mitre>
-      <id>T1046</id>
-    </mitre>
-    <group>gdpr_IV_35.7.d,nist_800_53_SI.4,tsc_CC6.1,tsc_CC6.8,pci_dss_11.4,recon,tsc_CC7.2,tsc_CC7.3,</group>
-  </rule>
-
-  <rule id="5732" level="0">
-    <if_sid>5700</if_sid>
-    <match>error: connect_to </match>
-    <description>sshd: Possible port forwarding failure.</description>
-  </rule>
-
-  <rule id="5733" level="0">
-    <if_sid>5700</if_sid>
-    <match>Invalid credentials</match>
-    <description>sshd: User entered incorrect password.</description>
-    <group>authentication_failures,gdpr_IV_35.7.d,gdpr_IV_32.2,gpg13_7.1,hipaa_164.312.b,nist_800_53_AU.14,nist_800_53_AC.7,pci_dss_10.2.4,pci_dss_10.2.5,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
-  </rule>
-
-  <rule id="5734" level="0">
-    <if_sid>5700</if_sid>
-    <match>Could not load host key</match>
-    <description>sshd: sshd could not load one or more host keys.</description>
-    <info>This may be related to an upgrade to OpenSSH.</info>
-  </rule>
-
-  <rule id="5735" level="0">
-    <if_sid>5700</if_sid>
-    <match>Write failed: Broken pipe</match>
-    <description>sshd: Failed write due to one host disappearing.</description>
-  </rule>
-
-  <rule id="5736" level="0">
-    <if_sid>5700</if_sid>
-    <match>^error: setsockopt SO_KEEPALIVE: Connection reset by peer$|</match>
-    <match>^error: accept: Software caused connection abort$</match>
-    <description>sshd: Connection reset or aborted.</description>
-  </rule>
-
-  <rule id="5737" level="5">
-    <if_sid>5700</if_sid>
-    <match>^fatal: Cannot bind any address.$</match>
-    <description>sshd: cannot bind to configured address.</description>
-    <group>gdpr_IV_35.7.d,gpg13_4.3,hipaa_164.312.b,nist_800_53_AU.6,pci_dss_10.6.1,tsc_CC7.2,tsc_CC7.3,</group>
-  </rule>
-
-  <rule id="5738" level="5">
-    <if_sid>5700</if_sid>
-    <match>set_loginuid failed opening loginuid$</match>
-    <description>sshd: pam_loginuid could not open loginuid.</description>
-    <group>authentication_failed,gdpr_IV_35.7.d,gdpr_IV_32.2,gpg13_7.1,hipaa_164.312.b,nist_800_53_AU.14,nist_800_53_AC.7,pci_dss_10.2.4,pci_dss_10.2.5,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
-  </rule>
-
-  <rule id="5739" level="4">
-    <if_sid>5700</if_sid>
-    <match>^error: Could not stat AuthorizedKeysCommand</match>
-    <description>sshd: configuration error (AuthorizedKeysCommand)</description>
-  </rule>
-
-  <rule id="5740" level="4">
-    <if_sid>5700</if_sid>
-    <match>Connection reset by peer$</match>
-    <description>sshd: connection reset by peer</description>
-  </rule>
-
-  <rule id="5741" level="4">
-    <if_sid>5700</if_sid>
-    <match>Connection refused$</match>
-    <description>sshd: connection refused</description>
-  </rule>
-
-  <rule id="5742" level="4">
-    <if_sid>5700</if_sid>
-    <match>Connection timed out$</match>
-    <description>sshd: connection timed out</description>
-    <group>gdpr_IV_35.7.d,hipaa_164.312.a.1,nist_800_53_AC.2,pci_dss_8.1.5,tsc_CC6.1,</group>
-  </rule>
-
-  <rule id="5743" level="4">
-    <if_sid>5700</if_sid>
-    <match>No route to host$</match>
-    <description>sshd: no route to host</description>
-  </rule>
-
-  <rule id="5744" level="4">
-    <if_sid>5700</if_sid>
-    <match>failure direct-tcpip$</match>
-    <description>sshd: port forwarding issue</description>
-  </rule>
-
-  <rule id="5745" level="4">
-    <if_sid>5700</if_sid>
-    <match>Transport endpoint is not connected$</match>
-    <description>sshd: transport endpoint is not connected</description>
-  </rule>
-
-  <rule id="5746" level="4">
-    <if_sid>5700</if_sid>
-    <match>get_remote_port failed$</match>
-    <description>sshd: get_remote_port failed</description>
-  </rule>
-
-  <!-- http://www.gossamer-threads.com/lists/openssh/users/47438 -->
-  <rule id="5747" level="6">
-    <if_sid>5700</if_sid>
-    <match>bad client public DH value</match>
-    <description>sshd: bad client public DH value</description>
-  </rule>
-
-  <rule id="5748" level="6">
-    <if_sid>5700</if_sid>
-    <match>Corrupted MAC on input.</match>
-    <description>sshd: corrupted MAC on input</description>
-    <group>gdpr_IV_35.7.d,gpg13_4.3,hipaa_164.312.b,nist_800_53_AU.6,pci_dss_10.6.1,tsc_CC7.2,tsc_CC7.3,</group>
-  </rule>
-
-  <rule id="5749" level="4">
-    <if_sid>5700</if_sid>
-    <match>^Bad packet length</match>
-    <description>sshd: bad packet length</description>
-  </rule>
-
-  <rule id="5750" level="0">
-    <decoded_as>sshd</decoded_as>
-    <if_sid>5700</if_sid>
-    <match>Unable to negotiate with |Unable to negotiate a key|fatal: no matching</match>
-    <description>sshd: could not negotiate with client.</description>
-  </rule>
-
-  <rule id="5751" level="1">
-    <decoded_as>sshd</decoded_as>
-    <if_sid>5700</if_sid>
-    <match>no hostkey alg [preauth]</match>
-    <description>sshd: No hostkey alg.</description>
-  </rule>
-
-  <rule id="5752" level="2">
-    <if_sid>5750</if_sid>
-    <match>no matching key exchange method found.|Unable to negotiate a key exchange method</match>
-    <description>sshd: Client did not offer an acceptable key exchange method.</description>
-  </rule>
-
-  <rule id="5753" level="2">
-    <if_sid>5750</if_sid>
-    <match>no matching cipher found</match>
-    <description>sshd: could not negotiate with client, no matching cipher.</description>
-  </rule>
-
-  <rule id="5754" level="1">
-    <if_sid>5700</if_sid>
-    <match>Failed to create session: </match>
-    <description>sshd: failed to create a session.</description>
-  </rule>
-
-  <rule id="5755" level="3">
-    <if_sid>5700</if_sid>
-    <match>bad ownership or modes for file</match>
-    <description>sshd: Authentication refused due to owner/permissions of authorized_keys.</description>
-    <group>authentication_failed,gpg13_7.1,</group>
-  </rule>
-
-  <rule id="5756" level="0">
-    <if_sid>5700</if_sid>
-    <match> failed, subsystem not found$</match>
-    <description>sshd: subsystem request failed.</description>
-  </rule>
-
-  <rule id="5757" level="0">
-    <if_sid>5700</if_sid>
-    <match>but this does not map back to the address - POSSIBLE BREAK-IN ATTEMPT!$</match>
-    <description>Bad DNS mapping.</description>
-  </rule>
-
-  <rule id="5758" level="8">
-    <if_sid>5700,5710</if_sid>
-    <match>^error: maximum authentication attempts exceeded </match>
-    <description>Maximum authentication attempts exceeded.</description>
-    <mitre>
-      <id>T1110</id>
-    </mitre>
-    <group>authentication_failed,gpg13_7.1,</group>
-  </rule>
-
-  <rule id="5759" level="2">
-    <if_sid>5750</if_sid>
-    <match>no matching mac found</match>
-    <description>sshd: could not negotiate with client, no matching mac.</description>
-  </rule>
-
-  <rule id="5760" level="5">
-    <if_sid>5700,5716</if_sid>
-    <match>Failed password|Failed keyboard|authentication error</match>
-    <description>sshd: authentication failed.</description>
-    <mitre>
-      <id>T1110.001</id>
-      <id>T1021.004</id>
-    </mitre>
-    <group>authentication_failed,gdpr_IV_35.7.d,gdpr_IV_32.2,gpg13_7.1,hipaa_164.312.b,nist_800_53_AU.14,nist_800_53_AC.7,pci_dss_10.2.4,pci_dss_10.2.5,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
-  </rule>
-
-  <rule id="5761" level="0">
-    <if_sid>5700</if_sid>
-    <match>Disconnected from user</match>
-    <description>sshd: ssh connection closed.</description>
-    <group>gdpr_IV_32.2,hipaa_164.312.b,nist_800_53_AU.14,nist_800_53_AC.7,pci_dss_10.2.5,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
-  </rule>
-
-  <rule id="5762" level="4">
-    <if_sid>5700</if_sid>
-    <match>Connection reset</match>
-    <description>sshd: connection reset</description>
-  </rule>
-
-  <rule id="5763" level="10" frequency="8" timeframe="120" ignore="60">
-    <if_matched_sid>5760</if_matched_sid>
-    <same_source_ip/>
-    <description>sshd: brute force trying to get access to the system. Authentication failed.</description>
-    <mitre>
-      <id>T1110</id>
-    </mitre>
-    <group>authentication_failures,gdpr_IV_35.7.d,gdpr_IV_32.2,hipaa_164.312.b,nist_800_53_SI.4,nist_800_53_AU.14,nist_800_53_AC.7,pci_dss_11.4,pci_dss_10.2.4,pci_dss_10.2.5,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  <rule id="100071" level="6">
+   <if_sid>100010</if_sid>
+   <field name="httpRequest.args">select%20|insert%20</field>
+   <description>SQL injection attempt.</description>
+   <group>attack,sqlinjection,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,</group>
   </rule>
 </group>
 {{- end }}
