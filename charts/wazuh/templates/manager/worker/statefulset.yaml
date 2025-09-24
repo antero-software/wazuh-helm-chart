@@ -95,7 +95,7 @@ spec:
               subPath: master_local_internal_options.conf
             - name: shared-dir
               mountPath: /var/ossec/etc/shared/
-            - mountPath: /var/ossec/etc/wazuh_extra_rules.xml
+            - mountPath: /var/ossec/etc/rules/wazuh_extra_rules.xml
               name: config
               subPath: wazuh_extra_rules.conf
             # Certs
