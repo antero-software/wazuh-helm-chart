@@ -347,8 +347,10 @@ wazuh:
         cpu: 5m
         memory: 16Mi
 
-  extraRules: |
-    {{- include "wazuh.extra_rules" . | indent 2 -}}
+  localRules: |
+    {{- include "wazuh.local_rules" . | indent 2 -}}
+  localDecoders: |
+    {{- include "wazuh.local_decoders" . | indent 2 -}}
 
   master:
     annotations: {}

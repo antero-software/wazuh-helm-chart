@@ -95,9 +95,12 @@ spec:
               subPath: master_local_internal_options.conf
             - name: shared-dir
               mountPath: /var/ossec/etc/shared/
-            - mountPath: /var/ossec/etc/rules/wazuh_extra_rules.xml
+            - mountPath: /var/ossec/etc/rules/local_rules.xml
               name: config
-              subPath: wazuh_extra_rules.conf
+              subPath: local_rules.conf
+            - mountPath: /var/ossec/etc/decoders/local_decoders.xml
+              name: config
+              subPath: local_decoders.conf
             # Certs
             - mountPath: /etc/ssl/root-ca.pem
               name: filebeat-certs

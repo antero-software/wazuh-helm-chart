@@ -792,7 +792,7 @@ plugins.security.allow_default_init_securityindex: true
 cluster.routing.allocation.disk.threshold_enabled: false
 compatibility.override_main_response_version: true
 {{- end }}
-{{- define "wazuh.extra_rules" }}
+{{- define "wazuh.local_rules" }}
 <group name="aws,amazon,cloudwatch,">
   <rule id="100010" level="3">
     <decoded_as>json</decoded_as>
@@ -837,7 +837,7 @@ compatibility.override_main_response_version: true
 
     <!-- Attempt to do directory transversal, simple sql injections,
       -  or access to the etc or bin directory (unix). -->
-    <field name="httpRequest.uri">%027|%00|%01|%7f|%2E%2E|%0A|%0D|../..|..\..|echo;|cmd.exe|root.exe|_mem_bin|msadc|/winnt/|/boot.ini|/x90/|default.ida|/sumthin|nsiislog.dll|chmod%|wget%|cd%20|exec%20|../..//|%5C../%5C|././././|2e%2e%5c%2e|\x5C\x5C</field>
+    <field name="httpRequest.uri">cmd.exe|root.exe|_mem_bin|msadc|/winnt/|/boot.ini|</field>
     <description>Common web attack.</description>
     <mitre>
       <id>T1055</id>
@@ -853,7 +853,7 @@ compatibility.override_main_response_version: true
     <url>%3Cscript|%3C%2Fscript|script>|script%3E|SRC=javascript|IMG%20|</url>
     <url>%20ONLOAD=|INPUT%20|iframe%20</url>
     -->
-    <field name="httpRequest.args">%3Cscript|%3C%2Fscript|script>|script%3E|SRC=javascript|IMG%20|%20ONLOAD=|INPUT%20|iframe%20|%3Cscript|%3C%2Fscript|script>|script%3E|SRC=javascript|IMG%20|%20ONLOAD=|INPUT%20|iframe%20</field>
+    <field name="httpRequest.args">%3Cscript|%3C%2Fscript|script>|script%3E|SRC=javascript|IMG%20|</field>
     <!-- <field name="httpRequest.args">%3Cscript|%3C%2Fscript|script>|script%3E|SRC=javascript|IMG%20|%20ONLOAD=|INPUT%20|iframe%20</field>>
     <field name="httpRequest.args">%20ONLOAD=|INPUT%20|iframe%20</field>	    
 	    -->
@@ -1143,4 +1143,22 @@ compatibility.override_main_response_version: true
    <group>attack,sqlinjection,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,</group>
   </rule>
 </group>
+{{- end }}
+{{- define "wazuh.local_decoders" }}
+<decoder name="json">
+	<parent>json</parent>
+	<regex>httpSourceName":"(\.*)",</regex>
+	<order>aws.source</order>
+</decoder>
+
+<decoder name="json">
+        <parent>json</parent>
+	<regex>webaclId":"\.*/\.*/(\.*)/</regex>
+        <order>wafruleset</order>
+</decoder>
+
+<decoder name="json">
+	<parent>json</parent>
+	<plugin_decoder>JSON_Decoder</plugin_decoder>
+</decoder>
 {{- end }}
