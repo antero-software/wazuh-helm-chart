@@ -1,6 +1,6 @@
 # Antero Wazuh Helm Chart
 
-![Version: 0.0.38](https://img.shields.io/badge/Version-0.0.38-informational?style=flat-square)
+![Version: 0.0.39](https://img.shields.io/badge/Version-0.0.39-informational?style=flat-square)
 ![AppVersion: 4.11.1](https://img.shields.io/badge/AppVersion-4.11.1-informational?style=flat-square)
 
 Wazuh is a free and open source security platform that unifies XDR and SIEM protection for endpoints and cloud workloads.
