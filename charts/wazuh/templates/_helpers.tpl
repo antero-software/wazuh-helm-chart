@@ -837,7 +837,7 @@ compatibility.override_main_response_version: true
 
     <!-- Attempt to do directory transversal, simple sql injections,
       -  or access to the etc or bin directory (unix). -->
-    <field name="httpRequest.args">cmd.exe|root.exe|_mem_bin|msadc|/winnt/|/boot.ini|</field>
+    <url>cmd.exe|root.exe|_mem_bin|msadc|/winnt/|/boot.ini|</url>
     <description>Common web attack.</description>
     <mitre>
       <id>T1055</id>
