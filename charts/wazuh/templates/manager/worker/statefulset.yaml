@@ -95,14 +95,14 @@ spec:
               subPath: master_local_internal_options.conf
             - name: shared-dir
               mountPath: /var/ossec/etc/shared/
-            - mountPath: /var/ossec/etc/decoders/local_decoder.xml
-              name: config
-              readOnly: true
-              subPath: local_decoders.conf
             - mountPath: /var/ossec/etc/rules/local_rules.xml
               name: config
-              readOnly: true
+              readOnly: false
               subPath: local_rules.conf
+            - mountPath: /var/ossec/etc/decoders/local_decoders.xml
+              name: config
+              readOnly: false
+              subPath: local_decoders.conf
             # Certs
             - mountPath: /etc/ssl/root-ca.pem
               name: filebeat-certs

@@ -800,6 +800,7 @@ compatibility.override_main_response_version: true
     <description>Cloudwatch Logs</description>
   </rule>
 
+
   <rule id="100018" level="0">
     <if_sid>100010</if_sid>
     <id>^2|^3</id>
@@ -833,6 +834,9 @@ compatibility.override_main_response_version: true
 
   <rule id="100014" level="6">
     <if_sid>100010</if_sid>
+
+    <!-- Attempt to do directory transversal, simple sql injections,
+      -  or access to the etc or bin directory (unix). -->
     <url>cmd.exe|root.exe|_mem_bin|msadc|/winnt/|/boot.ini|</url>
     <description>Common web attack.</description>
     <mitre>
@@ -845,7 +849,14 @@ compatibility.override_main_response_version: true
 
   <rule id="100015" level="6">
     <if_sid>100010</if_sid>
+    <!--
+    <url>%3Cscript|%3C%2Fscript|script>|script%3E|SRC=javascript|IMG%20|</url>
+    <url>%20ONLOAD=|INPUT%20|iframe%20</url>
+    -->
     <field name="httpRequest.args">%3Cscript|%3C%2Fscript|script>|script%3E|SRC=javascript|IMG%20|</field>
+    <!-- <field name="httpRequest.args">%3Cscript|%3C%2Fscript|script>|script%3E|SRC=javascript|IMG%20|%20ONLOAD=|INPUT%20|iframe%20</field>>
+    <field name="httpRequest.args">%20ONLOAD=|INPUT%20|iframe%20</field>	    
+	    -->
     <description>XSS (Cross Site Scripting) attempt.</description>
     <mitre>
       <id>T1059.007</id>
@@ -884,6 +895,10 @@ compatibility.override_main_response_version: true
     <group>attack,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
   </rule>
 
+
+  <!-- If your site have a search engine, you may need to ignore
+    - it in here.
+    -->
   <rule id="100017" level="0">
     <if_sid>100013, 100014, 100015</if_sid>
     <field name="httpRequest.uri">^/search.php?search=|^/index.php?searchword=</field>
@@ -900,6 +915,10 @@ compatibility.override_main_response_version: true
     <group>invalid_access,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.8,pci_dss_10.2.4,gdpr_IV_35.7.d,hipaa_164.312.b,nist_800_53_SA.11,nist_800_53_SI.4,nist_800_53_AU.14,nist_800_53_AC.7,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
   </rule>
 
+
+  <!-- 500 error codes, server error
+    - http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
+    -->
   <rule id="100020" level="5">
     <if_sid>100010</if_sid>
     <id>^50</id>
@@ -925,6 +944,7 @@ compatibility.override_main_response_version: true
     <description>Web server 503 error code (Service unavailable).</description>
   </rule>
 
+
   <!-- Rules to ignore crawlers -->
   <rule id="100040" level="0">
     <if_sid>100011</if_sid>
@@ -938,6 +958,7 @@ compatibility.override_main_response_version: true
     <id>^499</id>
     <description>Ignored 499's on nginx.</description>
   </rule>
+
 
   <rule id="100051" level="10" frequency="14" timeframe="90">
     <if_matched_sid>100011</if_matched_sid>

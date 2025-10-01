@@ -3,7 +3,11 @@ name: wazuh
 description: Wazuh is a security information and event management (SIEM) solution that provides security monitoring, threat detection, and incident response capabilities.
 type: application
 appVersion: 4.11.1
+<<<<<<< HEAD
 version: 0.0.45
+=======
+version: 0.0.42
+>>>>>>> parent of 13ed1c0 (Update for Wazuh Mount Path)
 home: https://wazuh.com/
 sources:
   - https://github.com/antero-software/wazuh-helm-chart
