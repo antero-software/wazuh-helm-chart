@@ -95,12 +95,14 @@ spec:
               subPath: master_local_internal_options.conf
             - name: shared-dir
               mountPath: /var/ossec/etc/shared/
-            - mountPath: /var/ossec/etc/rules/local_rules.xml
+            - mountPath: /wazuh-config-mount/etc/decoders/local_decoder.xml
               name: config
-              subPath: local_rules.conf
-            - mountPath: /var/ossec/etc/decoders/local_decoders.xml
+              readOnly: true
+              subPath: local_decoder.xml
+            - mountPath: /wazuh-config-mount/etc/rules/local_rules.xml
               name: config
-              subPath: local_decoders.conf
+              readOnly: true
+              subPath: local_rules.xml
             # Certs
             - mountPath: /etc/ssl/root-ca.pem
               name: filebeat-certs

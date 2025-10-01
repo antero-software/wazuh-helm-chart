@@ -15,13 +15,6 @@ data:
     chown -R root:wazuh /var/ossec/etc/shared
     chmod -R 775 /var/ossec/etc/shared
 
-    # Setting Custom Rules and Decoders correct permissions
-    
-    chown -R root:wazuh /var/ossec/etc/rules
-    chmod -R 775 /var/ossec/etc/rules
-    chown -R root:wazuh /var/ossec/etc/decoders
-    chmod -R 775 /var/ossec/etc/decoders
-
     # Create empty agent-template.conf if not exists
     TEMPLATE_FILE="/var/ossec/etc/shared/agent-template.conf"
     if [ ! -f "$TEMPLATE_FILE" ]; then
