@@ -792,7 +792,7 @@ plugins.security.allow_default_init_securityindex: true
 cluster.routing.allocation.disk.threshold_enabled: false
 compatibility.override_main_response_version: true
 {{- end }}
-{{- define "wazuh.local_rules" }}
+{{- define "wazuh.localRules" }}
 <group name="aws,amazon,cloudwatch,">
   <rule id="100010" level="3">
     <decoded_as>json</decoded_as>
@@ -1144,7 +1144,7 @@ compatibility.override_main_response_version: true
   </rule>
 </group>
 {{- end }}
-{{- define "wazuh.local_decoders" }}
+{{- define "wazuh.localDecoder" }}
 <decoder name="json">
 	<parent>json</parent>
 	<regex>httpSourceName":"(\.*)",</regex>
