@@ -32,5 +32,5 @@ data:
     {{- tpl .Values.wazuh.worker.localInternalOptions . | indent 2 }}
   local_rules.xml: |
     {{- tpl .Values.wazuh.localRules . | indent 2 }}
-  local_decoders.xml: |
+  local_decoder.xml: |
     {{- tpl .Values.wazuh.localDecoder . | indent 2 }}
