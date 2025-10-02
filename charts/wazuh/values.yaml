@@ -349,8 +349,8 @@ wazuh:
 
   localRules: |
     {{- include "wazuh.localRules" . | indent 2 -}}
-  localDecoders: |
-    {{- include "wazuh.localDecoders" . | indent 2 -}}
+  localDecoder: |
+    {{- include "wazuh.localDecoder" . | indent 2 -}}
 
   master:
     annotations: {}
