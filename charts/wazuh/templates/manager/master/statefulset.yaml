@@ -92,11 +92,11 @@ spec:
             - mountPath: /wazuh-config-mount/etc/decoders/local_decoder.xml
               name: config
               readOnly: true
-              subPath: local_decoder.xml
+              subPath: local_decoder.conf
             - mountPath: /wazuh-config-mount/etc/rules/local_rules.xml
               name: config
               readOnly: true
-              subPath: local_rules.xml
+              subPath: local_rules.conf
             # Certs
             - mountPath: /etc/ssl/root-ca.pem
               name: filebeat-certs

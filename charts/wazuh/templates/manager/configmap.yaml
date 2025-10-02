@@ -30,7 +30,7 @@ data:
     {{- tpl .Values.wazuh.worker.conf . | indent 2 }}
   worker_local_internal_options.conf: |
     {{- tpl .Values.wazuh.worker.localInternalOptions . | indent 2 }}
-  local_rules.xml: |
+  local_rules.conf: |
     {{- tpl .Values.wazuh.localRules . | indent 2 }}
-  local_decoder.xml: |
+  local_decoder.conf: |
     {{- tpl .Values.wazuh.localDecoder . | indent 2 }}
