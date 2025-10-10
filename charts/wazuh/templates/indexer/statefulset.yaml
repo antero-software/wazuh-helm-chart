@@ -36,17 +36,9 @@ spec:
       - name: node-certs
         secret:
           secretName: node-tls
-      - configMap:
-          name: {{ include "wazuh.fullname" . }}-indexer-config
-        name: indexer-conf
-      - name: google-saml-metadata
+      - name: indexer-conf
         configMap:
-          name: wazuh-google-saml-metadata
-          items:
-            - key: Google_Metadata.xml
-              path: Google_Metadata.xml
-      - name: saml-metadata
-        emptyDir: {}
+          name: {{ include "wazuh.fullname" . }}-indexer-config
       - name: google-saml-metadata
         configMap:
           name: wazuh-google-saml-metadata
@@ -71,19 +63,6 @@ spec:
           volumeMounts:
             - mountPath: /var/lib/wazuh-indexer
               name: wazuh-indexer
-        - name: copy-saml-metadata
-          image: busybox:stable
-          command:
-            - sh
-            - -c
-            - |
-              cp /tmp/google-metadata/Google_Metadata.xml /saml-metadata/ &&
-              chown 1000:1000 /saml-metadata/Google_Metadata.xml
-          volumeMounts:
-            - name: google-saml-metadata
-              mountPath: /tmp/google-metadata
-            - name: saml-metadata
-              mountPath: /saml-metadata
         # https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks-max-map-count.html
         - name: increase-the-vm-max-map-count
           image: busybox:stable
