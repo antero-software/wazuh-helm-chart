@@ -834,9 +834,6 @@ compatibility.override_main_response_version: true
 
   <rule id="100014" level="6">
     <if_sid>100010</if_sid>
-
-    <!-- Attempt to do directory transversal, simple sql injections,
-      -  or access to the etc or bin directory (unix). -->
     <url>cmd.exe|root.exe|_mem_bin|msadc|/winnt/|/boot.ini|</url>
     <description>Common web attack.</description>
     <mitre>
@@ -849,14 +846,7 @@ compatibility.override_main_response_version: true
 
   <rule id="100015" level="6">
     <if_sid>100010</if_sid>
-    <!--
-    <url>%3Cscript|%3C%2Fscript|script>|script%3E|SRC=javascript|IMG%20|</url>
-    <url>%20ONLOAD=|INPUT%20|iframe%20</url>
-    -->
     <field name="httpRequest.args">%3Cscript|%3C%2Fscript|script>|script%3E|SRC=javascript|IMG%20|</field>
-    <!-- <field name="httpRequest.args">%3Cscript|%3C%2Fscript|script>|script%3E|SRC=javascript|IMG%20|%20ONLOAD=|INPUT%20|iframe%20</field>>
-    <field name="httpRequest.args">%20ONLOAD=|INPUT%20|iframe%20</field>	    
-	    -->
     <description>XSS (Cross Site Scripting) attempt.</description>
     <mitre>
       <id>T1059.007</id>
