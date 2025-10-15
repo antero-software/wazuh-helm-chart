@@ -834,7 +834,7 @@ compatibility.override_main_response_version: true
 
   <rule id="100014" level="6">
     <if_sid>100010</if_sid>
-    <url>cmd.exe|root.exe|_mem_bin|msadc|/winnt/|/boot.ini|</url>
+    <field name="httpRequest.args">cmd.exe|root.exe|_mem_bin|msadc|/winnt/|/boot.ini</field>
     <description>Common web attack.</description>
     <mitre>
       <id>T1055</id>
@@ -846,7 +846,7 @@ compatibility.override_main_response_version: true
 
   <rule id="100015" level="6">
     <if_sid>100010</if_sid>
-    <field name="httpRequest.args">%3Cscript|%3C%2Fscript|script>|script%3E|SRC=javascript|IMG%20|</field>
+    <field name="httpRequest.args">%3Cscript|%3C%2Fscript|script>|script%3E|SRC=javascript|IMG%20</field>
     <description>XSS (Cross Site Scripting) attempt.</description>
     <mitre>
       <id>T1059.007</id>
