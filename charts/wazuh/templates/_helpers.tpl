@@ -1135,14 +1135,14 @@ compatibility.override_main_response_version: true
 </group>
 
 <group name="ossec,">
-  <rule id="100050" level="0">
+  <rule id="110050" level="0">
     <if_sid>530</if_sid>
     <match>^ossec: output: 'process list'</match>
     <description>List of running processes.</description>
     <group>process_monitor,</group>
   </rule>
-  <rule id="100051" level="7" ignore="900">
-    <if_sid>100050</if_sid>
+  <rule id="110051" level="10" ignore="900">
+    <if_sid>110050</if_sid>
     <match>nc -l</match>
     <description>netcat listening for incoming connections.</description>
     <group>process_monitor,</group>
