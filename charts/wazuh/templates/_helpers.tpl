@@ -1133,6 +1133,21 @@ compatibility.override_main_response_version: true
    <group>attack,sqlinjection,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,</group>
   </rule>
 </group>
+
+<group name="ossec,">
+  <rule id="110050" level="0">
+    <if_sid>530</if_sid>
+    <match>^ossec: output: 'process list'</match>
+    <description>List of running processes.</description>
+    <group>process_monitor,</group>
+  </rule>
+  <rule id="110051" level="10" ignore="900">
+    <if_sid>110050</if_sid>
+    <match>nc -l</match>
+    <description>netcat listening for incoming connections.</description>
+    <group>process_monitor,</group>
+  </rule>
+</group>
 {{- end }}
 {{- define "wazuh.local_decoders" }}
 <decoder name="json">
