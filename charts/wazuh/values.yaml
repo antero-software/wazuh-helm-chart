@@ -289,6 +289,21 @@ indexer:
               transport_enabled: false
               authorization_backend:
                 type: ldap
+    rolesMapping: |-
+      _meta:
+        type: "rolesmapping"
+        config_version: 2
+
+      all_access:
+        reserved: false
+        hidden: false
+        backend_roles:
+        - "admin"
+        - "Wazuh_access"
+        hosts: []
+        users: []
+        and_backend_roles: []
+        description: "Maps admin and Wazuh_access to all_access"
 
   env:
     OPENSEARCH_JAVA_OPTS: "-Xms1g -Xmx1g -Dlog4j2.formatMsgNoLookups=true"
