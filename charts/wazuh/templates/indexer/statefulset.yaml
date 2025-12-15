@@ -138,6 +138,10 @@ spec:
               mountPath: /usr/share/wazuh-indexer/opensearch-security/config.yml
               subPath: config.yml
               readOnly: true
+            - name: indexer-conf
+              mountPath: /usr/share/wazuh-indexer/opensearch-security/roles_mapping.yml
+              subPath: roles_mapping.yml
+              readOnly: true
             - name: google-saml-metadata
               mountPath: /usr/share/wazuh-indexer/config/Google_Metadata.xml
               subPath: Google_Metadata.xml
