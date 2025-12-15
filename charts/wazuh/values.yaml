@@ -21,7 +21,7 @@ dashboard:
 
   images:
     repository: wazuh/wazuh-dashboard
-    tag: "4.11.1"
+    tag: "4.14.0"
     pullPolicy: IfNotPresent
   
   resources:
@@ -106,7 +106,7 @@ indexer:
   
   images:
     repository: wazuh/wazuh-indexer
-    tag: "4.11.1"
+    tag: "4.14.0"
     pullPolicy: IfNotPresent
 
   resources:
@@ -392,7 +392,7 @@ wazuh:
   key: "c98b62a9b6169ac5f67dae55ae4a9088"
   images:
     repository: wazuh/wazuh-manager
-    tag: "4.11.1"
+    tag: "4.14.0"
     pullSecret: regcred
 
   # Will be implemented on Wazuh v5.0.0

@@ -834,10 +834,7 @@ compatibility.override_main_response_version: true
 
   <rule id="100014" level="6">
     <if_sid>100010</if_sid>
-
-    <!-- Attempt to do directory transversal, simple sql injections,
-      -  or access to the etc or bin directory (unix). -->
-    <url>cmd.exe|root.exe|_mem_bin|msadc|/winnt/|/boot.ini|</url>
+    <field name="httpRequest.args">cmd.exe|root.exe|_mem_bin|msadc|/winnt/|/boot.ini</field>
     <description>Common web attack.</description>
     <mitre>
       <id>T1055</id>
@@ -849,14 +846,7 @@ compatibility.override_main_response_version: true
 
   <rule id="100015" level="6">
     <if_sid>100010</if_sid>
-    <!--
-    <url>%3Cscript|%3C%2Fscript|script>|script%3E|SRC=javascript|IMG%20|</url>
-    <url>%20ONLOAD=|INPUT%20|iframe%20</url>
-    -->
-    <field name="httpRequest.args">%3Cscript|%3C%2Fscript|script>|script%3E|SRC=javascript|IMG%20|</field>
-    <!-- <field name="httpRequest.args">%3Cscript|%3C%2Fscript|script>|script%3E|SRC=javascript|IMG%20|%20ONLOAD=|INPUT%20|iframe%20</field>>
-    <field name="httpRequest.args">%20ONLOAD=|INPUT%20|iframe%20</field>	    
-	    -->
+    <field name="httpRequest.args">%3Cscript|%3C%2Fscript|script>|script%3E|SRC=javascript|IMG%20</field>
     <description>XSS (Cross Site Scripting) attempt.</description>
     <mitre>
       <id>T1059.007</id>
@@ -1141,6 +1131,21 @@ compatibility.override_main_response_version: true
    <field name="httpRequest.args">select%20|insert%20</field>
    <description>SQL injection attempt.</description>
    <group>attack,sqlinjection,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,</group>
+  </rule>
+</group>
+
+<group name="ossec,">
+  <rule id="110050" level="0">
+    <if_sid>530</if_sid>
+    <match>^ossec: output: 'process list'</match>
+    <description>List of running processes.</description>
+    <group>process_monitor,</group>
+  </rule>
+  <rule id="110051" level="10" ignore="900">
+    <if_sid>110050</if_sid>
+    <match>nc -l</match>
+    <description>netcat listening for incoming connections.</description>
+    <group>process_monitor,</group>
   </rule>
 </group>
 {{- end }}
