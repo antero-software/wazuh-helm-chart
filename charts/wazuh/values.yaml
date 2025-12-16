@@ -102,6 +102,9 @@ indexer:
     nodes: 9300
     metrics: 9600
 
+  googleSaml:
+    enabled: false
+
   updateStrategy: RollingUpdate
   
   images:
