@@ -23,18 +23,18 @@ dashboard:
     repository: wazuh/wazuh-dashboard
     tag: "4.14.0"
     pullPolicy: IfNotPresent
-
+  
   resources:
     limits:
       memory: 1Gi
     requests:
       cpu: 500m
       memory: 512Mi
-
+  
   pdb:
     enabled: false
     maxUnavailable: 1
-
+  
   # Will be implemented on Wazuh v5.0.0
   # readinessProbe: {}
 
@@ -53,12 +53,12 @@ dashboard:
     annotations: {}
     httpPort: 5601
     type: ClusterIP
-
+  
   cred:
     existingSecret: ""
     username: "kibanaserver"
     password: "kibanaserver"
-
+  
   config: |
     {{- include "wazuh.dashboard.config" . | indent 2 -}}
 
@@ -89,49 +89,8 @@ dashboard:
     #   hosts:
     #     - wazuh.example.com
 
+
 indexer:
-  command: ["/bin/bash", "-c"]
-  args:
-    - |
-      #!/bin/bash
-      set -e
-
-      echo "🔧 Starting S3 Plugin Bootstrap..."
-
-      # 1. Define Paths
-      export OPENSEARCH_HOME="/usr/share/wazuh-indexer"
-      ORIGINAL_CONF="${OPENSEARCH_HOME}/config"
-      WRITABLE_CONF="${OPENSEARCH_HOME}/config_writable"
-      PLUGIN_BIN="${OPENSEARCH_HOME}/bin/opensearch-plugin"
-
-      # 2. Clone Read-Only Config to Writable Directory
-      # We do this because we cannot install plugins into a Read-Only ConfigMap mount.
-      if [ ! -d "$WRITABLE_CONF" ]; then
-        echo "📂 Cloning config to writable location..."
-        mkdir -p "$WRITABLE_CONF"
-        cp -L -r $ORIGINAL_CONF/* $WRITABLE_CONF/
-      fi
-
-      # 3. Set Environment to use the new Writable Config
-      export OPENSEARCH_PATH_CONF="$WRITABLE_CONF"
-      export PATH=$PATH:$OPENSEARCH_HOME/bin
-
-      # 4. Patch the env script (Fixes 'No such file' error)
-      sed -i 's|source /etc/sysconfig/wazuh-indexer|true|' ${OPENSEARCH_HOME}/bin/opensearch-env
-
-      # 5. Check and Install Plugin
-      echo "🔍 Checking for S3 plugin..."
-      if ! $PLUGIN_BIN list | grep -q repository-s3; then
-        echo "⬇️ Installing repository-s3 plugin..."
-        $PLUGIN_BIN install --batch repository-s3
-      else
-        echo "✅ S3 plugin is already installed."
-      fi
-
-      echo "🚀 Starting Wazuh Indexer with Custom Config Path..."
-      # We must preserve the OPENSEARCH_PATH_CONF for the process
-      exec /entrypoint.sh opensearch
-
   replicas: 3
 
   annotations: {}
@@ -147,7 +106,7 @@ indexer:
     enabled: false
 
   updateStrategy: RollingUpdate
-
+  
   images:
     repository: wazuh/wazuh-indexer
     tag: "4.14.0"
@@ -159,7 +118,7 @@ indexer:
       memory: 1Gi
     limits:
       memory: 2Gi
-
+  
   pdb:
     enabled: false
     maxUnavailable: 1
@@ -429,7 +388,8 @@ indexer:
   cred:
     existingSecret: ""
     username: "admin"
-    password: "SecretPassword"
+    password: "SecretPassword"    
+
 
 wazuh:
   key: "c98b62a9b6169ac5f67dae55ae4a9088"
@@ -460,9 +420,9 @@ wazuh:
   authd:
     existingSecret: ""
     pass: "password"
-
+  
   initContainer:
-    resources:
+    resources: 
       limits:
         memory: 32Mi
       requests:
@@ -491,10 +451,10 @@ wazuh:
       requests:
         cpu: 500m
         memory: 1Gi
-
+    
     networkPolicy:
       enabled: true
-
+    
     storageClass: null
     storageSize: 50Gi
 
@@ -539,11 +499,11 @@ wazuh:
       requests:
         cpu: 500m
         memory: 1Gi
-
+    
     pdb:
       enabled: false
       maxUnavailable: 1
-
+    
     networkPolicy:
       enabled: true
 
@@ -564,7 +524,7 @@ wazuh:
       # - secretName: wazuh-tls
       #   hosts:
       #     - wazuh.example.com
-
+    
     conf: |
       {{- include "wazuh.worker.conf" . | indent 2 -}}
     # To be appended to the worker.conf
