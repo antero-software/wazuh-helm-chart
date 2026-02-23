@@ -1148,6 +1148,13 @@ compatibility.override_main_response_version: true
     <group>process_monitor,</group>
   </rule>
 </group>
+
+<group name='falsepositives'>
+  <rule id="110052" level="0">
+    <if_sid>80710</if_sid>
+    <description>Ignore Docker Promiscuous Mode Alerts</description>
+  </rule>
+</group>
 {{- end }}
 {{- define "wazuh.local_decoders" }}
 <decoder name="json">
