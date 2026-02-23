@@ -13,3 +13,5 @@ data:
 {{ tpl .Values.indexer.config.opensearch . | nindent 4 }}
   config.yml: |
 {{ tpl .Values.indexer.config.security . | nindent 4 }}
+  roles_mapping.yml: |
+{{ tpl .Values.indexer.config.rolesMapping . | nindent 4 }}
