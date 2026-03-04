@@ -1157,9 +1157,9 @@ compatibility.override_main_response_version: true
 </group>
 
 <group name='samealerts'>
-  <rule id="110053" level="12" ignore="1800" >
-      <if_sid>5108</if_sid>
-      <same_field>agent.id</same_field>
+  <rule id="110053" level="12" frequency="2" ignore="1800" >
+    <if_matched_sid>5108</if_matched_sid>
+    <same_field>agent.id</same_field>
     <description>System running out of memory. Availability of the system is in risk.</description>
   </rule>
 </group>
