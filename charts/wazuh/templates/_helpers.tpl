@@ -1155,6 +1155,14 @@ compatibility.override_main_response_version: true
     <description>Ignore Docker Promiscuous Mode Alerts</description>
   </rule>
 </group>
+
+<group name='samealerts'>
+  <rule id="110053" level="12" ignore="1800" >
+      <if_sid>5108</if_sid>
+      <same_field>agent.id</same_field>
+    <description>System running out of memory. Availability of the system is in risk.</description>
+  </rule>
+</group>
 {{- end }}
 {{- define "wazuh.local_decoders" }}
 <decoder name="json">
