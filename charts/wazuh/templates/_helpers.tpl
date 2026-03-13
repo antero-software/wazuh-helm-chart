@@ -1157,30 +1157,24 @@ compatibility.override_main_response_version: true
 </group>
 
 <group name='samealerts'>
-  <rule id="110053" level="12" frequency="2" ignore="1800" >
-    <if_matched_sid>5108</if_matched_sid>
-    <same_field>agent.id</same_field>
-    <description>System running out of memory. Availability of the system is in risk.</description>
-  </rule>
-
-   <rule id="110054" level="3" frequency="2" timeframe="300">
+   <rule id="110053" level="3" frequency="2" timeframe="300">
         <if_matched_sid>5108</if_matched_sid>
         <description>Muliple OOM Alerts from $(hostname)</description>
     </rule>
     
-    <rule id="110055" level="3">
+    <rule id="110054" level="3">
         <if_sid>19011</if_sid>
         <options>no_full_log</options>
         <description>$(sca.policy): $(sca.check.title): Status changed from passed to failed</description>
     </rule>
     
-    <rule id="110056" level="3">
+    <rule id="110055" level="3">
         <if_sid>19014</if_sid>
         <options>no_full_log</options>
         <description>$(sca.policy): $(sca.check.title): Status changed from 'not applicable' to failed</description>
     </rule>
     
-     <rule id="110057" level="3">
+     <rule id="110056" level="3">
         <if_sid>19005</if_sid>
         <options>no_full_log</options>
         <description>SCA summary: $(sca.policy): Score less than 30% ($(sca.score))</description>
