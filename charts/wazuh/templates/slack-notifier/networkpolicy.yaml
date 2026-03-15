@@ -1,0 +1,61 @@
+{{- if and .Values.slackNotifier.enabled .Values.slackNotifier.networkPolicy.enabled }}
+---
+# Allow inbound traffic from Wazuh Manager pods to the slack-notifier,
+# and allow outbound HTTPS to Slack API + DNS resolution.
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: {{ include "wazuh.fullname" . }}-slack-notifier
+spec:
+  podSelector:
+    matchLabels:
+      app: {{ include "wazuh.fullname" . }}-slack-notifier
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - ports:
+        - protocol: TCP
+          port: {{ .Values.slackNotifier.service.port }}
+      from:
+        - podSelector:
+            matchLabels:
+              app: {{ include "wazuh.fullname" . }}-manager
+  egress:
+    # Slack API
+    - ports:
+        - protocol: TCP
+          port: 443
+    # DNS
+    - ports:
+        - protocol: UDP
+          port: 53
+      to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+---
+# Additive egress rule for Wazuh Manager pods (master + worker) to reach slack-notifier.
+# Kubernetes NetworkPolicies are additive — this supplements the existing manager policies.
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: {{ include "wazuh.fullname" . }}-manager-egress-slack-notifier
+spec:
+  podSelector:
+    matchLabels:
+      app: {{ include "wazuh.fullname" . }}-manager
+  policyTypes:
+    - Egress
+  egress:
+    - ports:
+        - protocol: TCP
+          port: {{ .Values.slackNotifier.service.port }}
+      to:
+        - podSelector:
+            matchLabels:
+              app: {{ include "wazuh.fullname" . }}-slack-notifier
+{{- end }}
