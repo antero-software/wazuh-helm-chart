@@ -1,0 +1,38 @@
+{{- if .Values.slackNotifier.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "wazuh.fullname" . }}-slack-notifier
+  labels:
+    app: {{ include "wazuh.fullname" . }}-slack-notifier
+spec:
+  replicas: {{ .Values.slackNotifier.replicas }}
+  selector:
+    matchLabels:
+      app: {{ include "wazuh.fullname" . }}-slack-notifier
+  template:
+    metadata:
+      labels:
+        app: {{ include "wazuh.fullname" . }}-slack-notifier
+    spec:
+      containers:
+        - name: slack-notifier
+          image: "{{ .Values.slackNotifier.image.repository }}:{{ .Values.slackNotifier.image.tag }}"
+          imagePullPolicy: {{ .Values.slackNotifier.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.slackNotifier.service.port }}
+              protocol: TCP
+          env:
+            - name: PORT
+              value: {{ .Values.slackNotifier.service.port | quote }}
+            - name: ALERT_LEVEL_MIN
+              value: {{ .Values.slackNotifier.config.minAlertLevel | quote }}
+            - name: SLACK_WEBHOOK_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.slackNotifier.config.existingSecret | default (printf "%s-slack-notifier" (include "wazuh.fullname" .)) }}
+                  key: {{ .Values.slackNotifier.config.secretKey }}
+          resources:
+            {{- toYaml .Values.slackNotifier.resources | nindent 12 }}
+{{- end }}
