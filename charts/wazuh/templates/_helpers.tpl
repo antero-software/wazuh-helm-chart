@@ -383,6 +383,7 @@ server.xsrf.allowlist: ["/_opendistro/_security/saml/acs", "/_opendistro/_securi
   {{- if .Values.wazuh.master.extraConf }}
   {{ .Values.wazuh.master.extraConf | indent 2 }}
   {{- end }}
+  {{- include "wazuh.slackNotifier.integration" . }}
 </ossec_config>
 {{- end }}
 
@@ -1244,6 +1245,25 @@ compatibility.override_main_response_version: true
   </rule>
 </group>
 {{- end }}
+{{/*
+Wazuh <integration> block for the Slack notifier service.
+Rendered into master.conf only when slackNotifier.enabled is true.
+The native "slack" integration posts a pre-formatted Slack JSON payload to hook_url,
+so the notifier service acts as a transparent Slack-webhook-compatible endpoint.
+*/}}
+{{- define "wazuh.slackNotifier.integration" -}}
+{{- if .Values.slackNotifier.enabled }}
+
+  <!-- Slack Notifier integration (managed by Helm) -->
+  <integration>
+    <name>slack</name>
+    <hook_url>http://{{ include "wazuh.fullname" . }}-slack-notifier:{{ .Values.slackNotifier.service.port }}/alert</hook_url>
+    <level>{{ .Values.slackNotifier.config.minAlertLevel }}</level>
+    <alert_format>json</alert_format>
+  </integration>
+{{- end }}
+{{- end }}
+
 {{- define "wazuh.local_decoders" }}
 <decoder name="json">
 	<parent>json</parent>
