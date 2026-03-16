@@ -1157,10 +1157,90 @@ compatibility.override_main_response_version: true
 </group>
 
 <group name='samealerts'>
-  <rule id="110053" level="12" frequency="2" ignore="1800" >
-    <if_matched_sid>5108</if_matched_sid>
-    <same_field>agent.id</same_field>
-    <description>System running out of memory. Availability of the system is in risk.</description>
+   <rule id="110053" level="3" frequency="2" timeframe="300">
+        <if_matched_sid>5108</if_matched_sid>
+        <description>Muliple OOM Alerts from $(hostname)</description>
+    </rule>
+    
+    <rule id="110054" level="3">
+        <if_sid>19011</if_sid>
+        <options>no_full_log</options>
+        <description>$(sca.policy): $(sca.check.title): Status changed from passed to failed</description>
+    </rule>
+    
+    <rule id="110055" level="3">
+        <if_sid>19014</if_sid>
+        <options>no_full_log</options>
+        <description>$(sca.policy): $(sca.check.title): Status changed from 'not applicable' to failed</description>
+    </rule>
+    
+     <rule id="110056" level="3">
+        <if_sid>19005</if_sid>
+        <options>no_full_log</options>
+        <description>SCA summary: $(sca.policy): Score less than 30% ($(sca.score))</description>
+     </rule>
+</group>
+
+<group name="customised-waf-detection-rules,">
+  <rule id="120000" level="7">
+    <if_sid>100010,100018</if_sid>
+    <field name="httpRequest.args">SELECT</field>
+    <field name="httpRequest.args">WHERE</field>
+    <field name="httpRequest.args">FROM</field>
+    <description>Possible SQL injection attempt.</description>
+    <mitre>
+      <id>T1190</id>
+    </mitre>
+    <group>attack,sql_injection,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+  
+  <rule id="120001" level="7">
+    <if_sid>100010</if_sid>
+    <field name="httpRequest.args">getcmd|.exe|.php|echo|wget|curl|ping|.xml|.yml|passwd|.net|base64|netstat|credentials</field>
+    <description>Possible Malicious Logs</description>
+    <mitre>
+      <id>T1055</id>
+      <id>T1083</id>
+      <id>T1190</id>
+    </mitre>
+    <group>attack,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+ 
+  <rule id="120002" level="7">
+    <if_sid>100010</if_sid>
+    <field name="httpRequest.uri">getcmd|.exe|.php|echo|wget|curl|ping|.xml|.yml|passwd|.net|base64|passwd|netstat|credentials</field>
+    <description>Possible Malicious Logs</description>
+    <mitre>
+      <id>T1055</id>
+      <id>T1083</id>
+      <id>T1190</id>
+    </mitre>
+    <group>attack,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+  
+  
+  <rule id="120003" level="7">
+    <if_sid>100010</if_sid>
+    <field name="httpRequest.args">%3C|%lt|%amp|#x|x3C|u00|iframe|onload|onerror</field>
+    <description>Possible XSS Attack.</description>
+    <mitre>
+      <id>T1055</id>
+      <id>T1083</id>
+      <id>T1190</id>
+    </mitre>
+    <group>attack,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+  
+  <rule id="120004" level="7">
+    <if_sid>100010</if_sid>
+    <field name="httpRequest.uri">%3C|%lt|%amp|#x|x3C|u00|iframe|onload|onerror</field>
+    <description>Possible XSS Attack.</description>
+    <mitre>
+      <id>T1055</id>
+      <id>T1083</id>
+      <id>T1190</id>
+    </mitre>
+    <group>attack,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
   </rule>
 </group>
 {{- end }}
