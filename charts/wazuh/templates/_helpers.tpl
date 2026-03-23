@@ -822,16 +822,6 @@ compatibility.override_main_response_version: true
     <description>Ignored extensions on 400 error codes.</description>
   </rule>
 
-  <rule id="100013" level="7">
-    <if_sid>100010,100018</if_sid>
-    <field name="httpRequest.args">=select%20|select+|insert%20|%20from%20|%20where%20|union%20|union+|where+|null,null|xp_cmdshell</field>
-    <description>SQL injection attempt.</description>
-    <mitre>
-      <id>T1190</id>
-    </mitre>
-    <group>attack,sql_injection,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
-  </rule>
-
   <rule id="100014" level="6">
     <if_sid>100010</if_sid>
     <field name="httpRequest.args">cmd.exe|root.exe|_mem_bin|msadc|/winnt/|/boot.ini</field>
@@ -842,16 +832,6 @@ compatibility.override_main_response_version: true
       <id>T1190</id>
     </mitre>
     <group>attack,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
-  </rule>
-
-  <rule id="100015" level="6">
-    <if_sid>100010</if_sid>
-    <field name="httpRequest.args">%3Cscript|%3C%2Fscript|script>|script%3E|SRC=javascript|IMG%20</field>
-    <description>XSS (Cross Site Scripting) attempt.</description>
-    <mitre>
-      <id>T1059.007</id>
-    </mitre>
-    <group>attack,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.7,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
   </rule>
 
   <rule id="100016" level="6">
@@ -961,16 +941,6 @@ compatibility.override_main_response_version: true
     <group>web_scan,recon,pci_dss_6.5,pci_dss_11.4,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
   </rule>
 
-  <rule id="100052" level="10" frequency="8" timeframe="120">
-    <if_matched_sid>100013</if_matched_sid>
-    <same_source_ip />
-    <description>Multiple SQL injection attempts from same </description>
-    <description>source ip.</description>
-    <mitre>
-      <id>T1055</id>
-    </mitre>
-    <group>attack,sql_injection,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
-  </rule>
 
   <rule id="100053" level="10" frequency="10" timeframe="120">
     <if_matched_sid>100014</if_matched_sid>
@@ -981,17 +951,6 @@ compatibility.override_main_response_version: true
       <id>T1083</id>
     </mitre>
     <group>attack,pci_dss_6.5,pci_dss_11.4,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
-  </rule>
-
-  <rule id="100054" level="10" frequency="10" timeframe="120">
-    <if_matched_sid>100015</if_matched_sid>
-    <same_source_ip />
-    <description>Multiple XSS (Cross Site Scripting) attempts </description>
-    <description>from same source ip.</description>
-    <mitre>
-      <id>T1059</id>
-    </mitre>
-    <group>attack,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.7,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
   </rule>
 
   <rule id="100061" level="10" frequency="14" timeframe="120">
@@ -1021,27 +980,6 @@ compatibility.override_main_response_version: true
     <group>web_scan,recon,pci_dss_6.5,pci_dss_11.4,pci_dss_10.6.1,gdpr_IV_35.7.d,hipaa_164.312.b,nist_800_53_SA.11,nist_800_53_SI.4,nist_800_53_AU.6,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
   </rule>
 
-  <rule id="100064" level="6">
-    <if_sid>100010</if_sid>
-    <field name="httpRequest.args">=%27|select%2B|insert%2B|%2Bfrom%2B|%2Bwhere%2B|%2Bunion%2B</field>
-    <description>SQL injection attempt.</description>
-    <mitre>
-      <id>T1055</id>
-      <id>T1190</id>
-    </mitre>
-    <group>attack,sqlinjection,attack,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
-  </rule>
-
-  <rule id="100065" level="6">
-    <if_sid>100010</if_sid>
-    <field name="httpRequest.args">%EF%BC%87|%EF%BC%87|%EF%BC%87|%2531|%u0053%u0045</field>
-    <description>SQL injection attempt.</description>
-    <mitre>
-      <id>T1055</id>
-      <id>T1190</id>
-    </mitre>
-    <group>attack,sqlinjection,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
-  </rule>
 
 <!--
     Shellshock detected
@@ -1119,19 +1057,6 @@ compatibility.override_main_response_version: true
     <group>attack,pci_dss_11.4,gdpr_IV_35.7.d,nist_800_53_SI.4,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
   </rule>
 
-  <rule id="100070" level="6">
-    <if_sid>100010</if_sid>
-    <field name="httpRequest.args">%2csleep|sysdate()|nslookup%20dns.sqli</field>
-    <description>SQL injection attempt.</description>
-    <group>attack,sqlinjection,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,</group>
-  </rule>
-
-  <rule id="100071" level="6">
-   <if_sid>100010</if_sid>
-   <field name="httpRequest.args">select%20|insert%20</field>
-   <description>SQL injection attempt.</description>
-   <group>attack,sqlinjection,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,</group>
-  </rule>
 </group>
 
 <group name="ossec,">
@@ -1181,8 +1106,78 @@ compatibility.override_main_response_version: true
      </rule>
 </group>
 
-<group name="customised-waf-detection-rules,">
+<group name="aws,amazon,cloudwatch,customised-waf-file-enumeration-detection-rules,"> 
   <rule id="120000" level="7">
+    <if_sid>100010</if_sid>
+    <field name="httpRequest.args">.exe|.php|.xml|.yml|passwd|.sql|.git|.env</field>
+    <description>Possible File Enumeration in URL Parameter</description>
+    <mitre>
+      <id>T1055</id>
+      <id>T1083</id>
+      <id>T1190</id>
+    </mitre>
+    <group>attack,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+ 
+  <rule id="120001" level="7">
+    <if_sid>100010</if_sid>
+    <field name="httpRequest.uri">.exe|.php|.xml|.yml|passwd|.sql|.git|.env</field>
+    <description>Possible File Enumeration in URL</description>
+    <mitre>
+      <id>T1055</id>
+      <id>T1083</id>
+      <id>T1190</id>
+    </mitre>
+    <group>attack,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+ 
+</group>  
+
+<group name="aws,amazon,cloudwatch,customised-waf-xss-detection-rules,">
+   <rule id="120101" level="7">
+    <if_sid>100010</if_sid>
+    <field name="httpRequest.args">%3Cscript|%3C%2Fscript|script>|script%3E|SRC=javascript|IMG%20|iframe|onload|onerror</field>
+    <description>Possible XSS Attack. Payload in URL Parameters.</description>
+     <mitre>
+      <id>T1059.007</id>
+    </mitre>
+    <group>attack,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.7,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+  <rule id="120102" level="7">
+    <if_sid>100010</if_sid>
+    <field name="httpRequest.uri">%3Cscript|%3C%2Fscript|script>|script%3E|SRC=javascript|IMG%20|iframe|onload|onerror</field>
+    <description>Possible XSS Attack. Payload in URL.</description>
+    <mitre>
+      <id>T1059.007</id>
+    </mitre>
+    <group>attack,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.7,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+  
+  <rule id="120103" level="7">
+    <if_sid>100010</if_sid>
+    <field name="httpRequest.headers">%3Cscript|%3C%2Fscript|script>|script%3E|SRC=javascript|IMG%20|iframe|onload|onerror</field>
+    <description>Possible XSS Attack. Payload in Request Headers.</description>
+    <mitre>
+      <id>T1059.007</id>
+    </mitre>
+    <group>attack,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.7,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+  
+  <rule id="120104" level="10" frequency="10" timeframe="120">
+    <if_matched_group>customised-waf-xss-detection-rules</if_matched_group>
+    <same_field>httpRequest.clientIp</same_field>
+    <description>Multiple XSS (Cross Site Scripting) attempts </description>
+    <description>from same source ip.</description>
+    <mitre>
+      <id>T1059</id>
+    </mitre>
+    <group>attack,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.7,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+</group>
+
+<group name="aws,amazon,cloudwatch,customised-waf-sql-injection-detection-rules,">
+
+   <rule id="120201" level="7">
     <if_sid>100010,100018</if_sid>
     <field name="httpRequest.args">SELECT</field>
     <field name="httpRequest.args">WHERE</field>
@@ -1193,54 +1188,116 @@ compatibility.override_main_response_version: true
     </mitre>
     <group>attack,sql_injection,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
   </rule>
-  
-  <rule id="120001" level="7">
+  <rule id="120202" level="7">
     <if_sid>100010</if_sid>
-    <field name="httpRequest.args">getcmd|.exe|.php|echo|wget|curl|ping|.xml|.yml|passwd|.net|base64|netstat|credentials</field>
-    <description>Possible Malicious Logs</description>
+    <field name="httpRequest.args">=%27|select%2B|insert%2B|%2Bfrom%2B|%2Bwhere%2B|=select%20|select+|insert%20|%20from%20|%20where%20|union%20</field>
+    <description>Possible SQL injection attempt. Payload in URL Parameters.</description>
     <mitre>
-      <id>T1055</id>
-      <id>T1083</id>
       <id>T1190</id>
     </mitre>
-    <group>attack,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+    <group>attack,sql_injection,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
   </rule>
- 
-  <rule id="120002" level="7">
+  <rule id="120203" level="7">
     <if_sid>100010</if_sid>
-    <field name="httpRequest.uri">getcmd|.exe|.php|echo|wget|curl|ping|.xml|.yml|passwd|.net|base64|passwd|netstat|credentials</field>
-    <description>Possible Malicious Logs</description>
+    <field name="httpRequest.args">%2Bunion%2B|%EF%BC%87|%EF%BC%87|%EF%BC%87|%2531|%u0053%u0045|union+|where+|xp_cmdshell|%2csleep|sysdate()|nslookup%20dns.sqli|select%20|insert%20</field>
+    <description>Possible SQL injection attempt. Payload in URL Parameters.</description>
     <mitre>
-      <id>T1055</id>
-      <id>T1083</id>
       <id>T1190</id>
     </mitre>
-    <group>attack,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+    <group>attack,sql_injection,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
   </rule>
   
-  
-  <rule id="120003" level="7">
+  <rule id="120204" level="7">
     <if_sid>100010</if_sid>
-    <field name="httpRequest.args">%3C|%lt|%amp|#x|x3C|u00|iframe|onload|onerror</field>
-    <description>Possible XSS Attack.</description>
+    <field name="httpRequest.uri">=%27|select%2B|insert%2B|%2Bfrom%2B|%2Bwhere%2B|=select%20|select+|insert%20|%20from%20|%20where%20|union%20</field>
+    <description>Possible SQL injection attempt. Payload in URL.</description>
     <mitre>
-      <id>T1055</id>
-      <id>T1083</id>
       <id>T1190</id>
     </mitre>
-    <group>attack,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+    <group>attack,sql_injection,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+   <rule id="120205" level="7">
+    <if_sid>100010</if_sid>
+    <field name="httpRequest.uri">%2Bunion%2B|%EF%BC%87|%EF%BC%87|%EF%BC%87|%2531|%u0053%u0045|union+|where+|xp_cmdshell|%2csleep|sysdate()|nslookup%20dns.sqli|select%20|insert%20</field>
+    <description>Possible SQL injection attempt. Payload in URL.</description>
+    <mitre>
+      <id>T1190</id>
+    </mitre>
+    <group>attack,sql_injection,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
   </rule>
   
-  <rule id="120004" level="7">
+  
+  <rule id="120206" level="7">
     <if_sid>100010</if_sid>
-    <field name="httpRequest.uri">%3C|%lt|%amp|#x|x3C|u00|iframe|onload|onerror</field>
-    <description>Possible XSS Attack.</description>
+    <field name="httpRequest.headers">=%27|select%2B|insert%2B|%2Bfrom%2B|%2Bwhere%2B|=select%20|select+|insert%20|%20from%20|%20where%20|union%20</field>
+    <description>Possible SQL injection attempt. Payload in Request Headers.</description>
     <mitre>
-      <id>T1055</id>
-      <id>T1083</id>
       <id>T1190</id>
     </mitre>
-    <group>attack,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+    <group>attack,sql_injection,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+  
+  <rule id="120207" level="7">
+    <if_sid>100010</if_sid>
+    <field name="httpRequest.headers">%2Bunion%2B|%EF%BC%87|%EF%BC%87|%EF%BC%87|%2531|%u0053%u0045|union+|where+|xp_cmdshell|%2csleep|sysdate()|nslookup%20dns.sqli|select%20|insert%20</field>
+    <description>Possible SQL injection attempt. Payload in Request Headers.</description>
+    <mitre>
+      <id>T1190</id>
+    </mitre>
+    <group>attack,sql_injection,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+  
+  <rule id="120208" level="10" frequency="10" timeframe="120">
+    <if_matched_group>customised-waf-sql-injection-detection-rules</if_matched_group>
+    <same_field>httpRequest.clientIp</same_field>
+    <description>Multiple SQL injection attempts from same source ip.</description>
+    <mitre>
+      <id>T1190</id>
+    </mitre>
+    <group>attack,sql_injection,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+</group>
+
+<group name="aws,amazon,cloudwatch,customised-waf-command-injection-detection-rules,">
+
+   <rule id="120301" level="7">
+    <if_sid>100010</if_sid>
+    <field name="httpRequest.args">shell_exec|ls%20|Li8uLi8uLi8uLi8uLi8uLi9|serverInfo|getVersion|${jndi|http:|file%3a|%252F|%2F%2F|cat%20|ipconfig|netcat|%5C%5C|print%20</field>
+    <description>Possible Command injection attempt. Payload in URL Parameters.</description>
+    <mitre>
+      <id>T1190</id>
+    </mitre>
+    <group>attack,pci_dss_6.5,pci_dss_11.4,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+  
+  <rule id="120302" level="7">
+    <if_sid>100010</if_sid>
+    <field name="httpRequest.uri">shell_exec|ls%20|Li8uLi8uLi8uLi8uLi8uLi9|serverInfo|getVersion|${jndi|http:|file%3a|%252F|%2F%2F|cat%20|ipconfig|netcat|%5C%5C|print%20</field>
+    <description>Possible Command injection attempt. Payload in URL.</description>
+    <mitre>
+      <id>T1190</id>
+    </mitre>
+    <group>attack,pci_dss_6.5,pci_dss_11.4,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+  
+  <rule id="120303" level="7">
+    <if_sid>100010</if_sid>
+    <field name="httpRequest.headers">shell_exec|ls%20|Li8uLi8uLi8uLi8uLi8uLi9|serverInfo|getVersion|${jndi|http:|file%3a|%252F|%2F%2F|cat%20|ipconfig|netcat|%5C%5C|print%20</field>
+    <description>Possible Command injection attempt. Payload in Request Headers.</description>
+    <mitre>
+      <id>T1190</id>
+    </mitre>
+    <group>attack,pci_dss_6.5,pci_dss_11.4,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+  
+  <rule id="120304" level="10" frequency="10" timeframe="120">
+    <if_matched_group>customised-waf-command-injection-detection-rules</if_matched_group>
+    <same_field>httpRequest.clientIp</same_field>
+    <description>Multiple Command injection attempts from same source ip.</description>
+    <mitre>
+      <id>T1203</id>
+    </mitre>
+    <group>attack,pci_dss_6.5,pci_dss_11.4,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
   </rule>
 </group>
 {{- end }}
