@@ -930,57 +930,6 @@ compatibility.override_main_response_version: true
   </rule>
 
 
-  <rule id="100051" level="10" frequency="14" timeframe="90">
-    <if_matched_sid>100011</if_matched_sid>
-    <same_source_ip />
-    <description>Multiple web server 400 error codes </description>
-    <description>from same source ip.</description>
-    <mitre>
-      <id>T1595.002</id>
-    </mitre>
-    <group>web_scan,recon,pci_dss_6.5,pci_dss_11.4,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
-  </rule>
-
-
-  <rule id="100053" level="10" frequency="10" timeframe="120">
-    <if_matched_sid>100014</if_matched_sid>
-    <same_source_ip />
-    <description>Multiple common web attacks from same source ip.</description>
-    <mitre>
-      <id>T1055</id>
-      <id>T1083</id>
-    </mitre>
-    <group>attack,pci_dss_6.5,pci_dss_11.4,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
-  </rule>
-
-  <rule id="100061" level="10" frequency="14" timeframe="120">
-    <if_matched_sid>100021</if_matched_sid>
-    <same_source_ip />
-    <description>Multiple web server 501 error code (Not Implemented).</description>
-    <mitre>
-      <id>T1595.002</id>
-    </mitre>
-    <group>web_scan,recon,pci_dss_6.5,pci_dss_11.4,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
-  </rule>
-
-  <rule id="100062" level="10" frequency="14" timeframe="120">
-    <if_matched_sid>100022</if_matched_sid>
-    <same_source_ip />
-    <description>Multiple web server 500 error code (Internal Error).</description>
-    <group>system_error,pci_dss_6.5,pci_dss_10.6.1,gdpr_IV_35.7.d,hipaa_164.312.b,nist_800_53_SA.11,nist_800_53_AU.6,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC7.2,tsc_CC7.3,</group>
-  </rule>
-
-  <rule id="100063" level="10" frequency="14" timeframe="120">
-    <if_matched_sid>100023</if_matched_sid>
-    <same_source_ip />
-    <description>Multiple web server 503 error code (Service unavailable).</description>
-    <mitre>
-      <id>T1498</id>
-    </mitre>
-    <group>web_scan,recon,pci_dss_6.5,pci_dss_11.4,pci_dss_10.6.1,gdpr_IV_35.7.d,hipaa_164.312.b,nist_800_53_SA.11,nist_800_53_SI.4,nist_800_53_AU.6,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
-  </rule>
-
-
 <!--
     Shellshock detected
     Pattern: "(){:;};" (with spaces)
@@ -1173,6 +1122,24 @@ compatibility.override_main_response_version: true
     </mitre>
     <group>attack,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.7,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
   </rule>
+
+  <rule id="120105" level="11" frequency="2" timeframe="600">
+    <if_matched_sid>120104</if_matched_sid>
+    <description>Ignore 120104 Alerts from flooding the channel</description>
+    <mitre>
+      <id>T1059</id>
+    </mitre>
+    <group>attack,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.7,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+  
+  <rule id="120106" level="3" overwrite="yes">
+    <if_sid>120105</if_sid>
+    <description>Ignore 120104 Alerts from flooding the channel</description>
+    <mitre>
+      <id>T1059</id>
+    </mitre>
+    <group>attack,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.7,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
 </group>
 
 <group name="aws,amazon,cloudwatch,customised-waf-sql-injection-detection-rules,">
@@ -1256,6 +1223,24 @@ compatibility.override_main_response_version: true
     </mitre>
     <group>attack,sql_injection,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
   </rule>
+
+  <rule id="120209" level="11" frequency="2" timeframe="600">
+    <if_matched_sid>120208</if_matched_sid>
+    <description>Ignore 120208 Alerts from flooding the channel</description>
+    <mitre>
+      <id>T1059</id>
+    </mitre>
+    <group>attack,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.7,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+  
+  <rule id="120210" level="3" overwrite="yes">
+    <if_sid>120209</if_sid>
+    <description>Ignore 120208 Alerts from flooding the channel</description>
+    <mitre>
+      <id>T1059</id>
+    </mitre>
+    <group>attack,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.7,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
 </group>
 
 <group name="aws,amazon,cloudwatch,customised-waf-command-injection-detection-rules,">
@@ -1298,6 +1283,24 @@ compatibility.override_main_response_version: true
       <id>T1203</id>
     </mitre>
     <group>attack,pci_dss_6.5,pci_dss_11.4,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+  
+  <rule id="120305" level="11" frequency="2" timeframe="600">
+    <if_matched_sid>120304</if_matched_sid>
+    <description>Ignore 120304 Alerts from flooding the channel</description>
+    <mitre>
+      <id>T1059</id>
+    </mitre>
+    <group>attack,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.7,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+  
+  <rule id="120306" level="3" overwrite="yes">
+    <if_sid>120305</if_sid>
+    <description>Ignore 120304 Alerts from flooding the channel</description>
+    <mitre>
+      <id>T1059</id>
+    </mitre>
+    <group>attack,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.7,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
   </rule>
 </group>
 {{- end }}
