@@ -1079,11 +1079,10 @@ compatibility.override_main_response_version: true
     </mitre>
     <group>attack,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
   </rule>
- 
 </group>  
 
 <group name="aws,amazon,cloudwatch,customised-waf-xss-detection-rules,">
-   <rule id="120101" level="7">
+  <rule id="120101" level="7">
     <if_sid>100010</if_sid>
     <field name="httpRequest.args">%3Cscript|%3C%2Fscript|script>|script%3E|SRC=javascript|IMG%20|iframe|onload|onerror</field>
     <description>Possible XSS Attack. Payload in URL Parameters.</description>
@@ -1112,7 +1111,7 @@ compatibility.override_main_response_version: true
     <group>attack,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.7,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
   </rule>
   
-  <rule id="120104" level="10" frequency="10" timeframe="120">
+  <rule id="120104" level="10" frequency="10" timeframe="300">
     <if_matched_group>customised-waf-xss-detection-rules</if_matched_group>
     <same_field>httpRequest.clientIp</same_field>
     <description>Multiple XSS (Cross Site Scripting) attempts </description>
@@ -1122,10 +1121,10 @@ compatibility.override_main_response_version: true
     </mitre>
     <group>attack,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.7,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
   </rule>
-
+  
   <rule id="120105" level="11" frequency="2" timeframe="600">
     <if_matched_sid>120104</if_matched_sid>
-    <description>Ignore 120104 Alerts from flooding the channel</description>
+    <description>Multiple XSS (Cross Site Scripting) attempts from same source ip. (Ignore 120104 Alerts from flooding the channel)</description>
     <mitre>
       <id>T1059</id>
     </mitre>
@@ -1134,7 +1133,7 @@ compatibility.override_main_response_version: true
   
   <rule id="120106" level="3" overwrite="yes">
     <if_sid>120105</if_sid>
-    <description>Ignore 120104 Alerts from flooding the channel</description>
+    <description>Multiple XSS (Cross Site Scripting) attempts from same source ip. (Ignore 120104 Alerts from flooding the channel)</description>
     <mitre>
       <id>T1059</id>
     </mitre>
@@ -1143,8 +1142,7 @@ compatibility.override_main_response_version: true
 </group>
 
 <group name="aws,amazon,cloudwatch,customised-waf-sql-injection-detection-rules,">
-
-   <rule id="120201" level="7">
+  <rule id="120201" level="7">
     <if_sid>100010,100018</if_sid>
     <field name="httpRequest.args">SELECT</field>
     <field name="httpRequest.args">WHERE</field>
@@ -1155,6 +1153,7 @@ compatibility.override_main_response_version: true
     </mitre>
     <group>attack,sql_injection,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
   </rule>
+
   <rule id="120202" level="7">
     <if_sid>100010</if_sid>
     <field name="httpRequest.args">=%27|select%2B|insert%2B|%2Bfrom%2B|%2Bwhere%2B|=select%20|select+|insert%20|%20from%20|%20where%20|union%20</field>
@@ -1164,6 +1163,7 @@ compatibility.override_main_response_version: true
     </mitre>
     <group>attack,sql_injection,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
   </rule>
+
   <rule id="120203" level="7">
     <if_sid>100010</if_sid>
     <field name="httpRequest.args">%2Bunion%2B|%EF%BC%87|%EF%BC%87|%EF%BC%87|%2531|%u0053%u0045|union+|where+|xp_cmdshell|%2csleep|sysdate()|nslookup%20dns.sqli|select%20|insert%20</field>
@@ -1183,7 +1183,8 @@ compatibility.override_main_response_version: true
     </mitre>
     <group>attack,sql_injection,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
   </rule>
-   <rule id="120205" level="7">
+
+  <rule id="120205" level="7">
     <if_sid>100010</if_sid>
     <field name="httpRequest.uri">%2Bunion%2B|%EF%BC%87|%EF%BC%87|%EF%BC%87|%2531|%u0053%u0045|union+|where+|xp_cmdshell|%2csleep|sysdate()|nslookup%20dns.sqli|select%20|insert%20</field>
     <description>Possible SQL injection attempt. Payload in URL.</description>
@@ -1192,7 +1193,6 @@ compatibility.override_main_response_version: true
     </mitre>
     <group>attack,sql_injection,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
   </rule>
-  
   
   <rule id="120206" level="7">
     <if_sid>100010</if_sid>
@@ -1214,7 +1214,7 @@ compatibility.override_main_response_version: true
     <group>attack,sql_injection,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
   </rule>
   
-  <rule id="120208" level="10" frequency="10" timeframe="120">
+  <rule id="120208" level="10" frequency="10" timeframe="300">
     <if_matched_group>customised-waf-sql-injection-detection-rules</if_matched_group>
     <same_field>httpRequest.clientIp</same_field>
     <description>Multiple SQL injection attempts from same source ip.</description>
@@ -1223,10 +1223,10 @@ compatibility.override_main_response_version: true
     </mitre>
     <group>attack,sql_injection,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
   </rule>
-
+  
   <rule id="120209" level="11" frequency="2" timeframe="600">
     <if_matched_sid>120208</if_matched_sid>
-    <description>Ignore 120208 Alerts from flooding the channel</description>
+    <description>Multiple SQL injection attempts from same source ip. (Ignore 120208 Alerts from flooding the channel)</description>
     <mitre>
       <id>T1059</id>
     </mitre>
@@ -1235,7 +1235,7 @@ compatibility.override_main_response_version: true
   
   <rule id="120210" level="3" overwrite="yes">
     <if_sid>120209</if_sid>
-    <description>Ignore 120208 Alerts from flooding the channel</description>
+    <description>Multiple SQL injection attempts from same source ip. (Ignore 120208 Alerts from flooding the channel)</description>
     <mitre>
       <id>T1059</id>
     </mitre>
@@ -1244,7 +1244,6 @@ compatibility.override_main_response_version: true
 </group>
 
 <group name="aws,amazon,cloudwatch,customised-waf-command-injection-detection-rules,">
-
    <rule id="120301" level="7">
     <if_sid>100010</if_sid>
     <field name="httpRequest.args">shell_exec|ls%20|Li8uLi8uLi8uLi8uLi8uLi9|serverInfo|getVersion|${jndi|http:|file%3a|%252F|%2F%2F|cat%20|ipconfig|netcat|%5C%5C|print%20</field>
@@ -1275,7 +1274,7 @@ compatibility.override_main_response_version: true
     <group>attack,pci_dss_6.5,pci_dss_11.4,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
   </rule>
   
-  <rule id="120304" level="10" frequency="10" timeframe="120">
+  <rule id="120304" level="10" frequency="10" timeframe="300">
     <if_matched_group>customised-waf-command-injection-detection-rules</if_matched_group>
     <same_field>httpRequest.clientIp</same_field>
     <description>Multiple Command injection attempts from same source ip.</description>
@@ -1287,7 +1286,7 @@ compatibility.override_main_response_version: true
   
   <rule id="120305" level="11" frequency="2" timeframe="600">
     <if_matched_sid>120304</if_matched_sid>
-    <description>Ignore 120304 Alerts from flooding the channel</description>
+    <description>Multiple Command injection attempts from same source ip. (Ignore 120304 Alerts from flooding the channel)</description>
     <mitre>
       <id>T1059</id>
     </mitre>
@@ -1296,7 +1295,7 @@ compatibility.override_main_response_version: true
   
   <rule id="120306" level="3" overwrite="yes">
     <if_sid>120305</if_sid>
-    <description>Ignore 120304 Alerts from flooding the channel</description>
+    <description>Multiple Command injection attempts from same source ip. (Ignore 120304 Alerts from flooding the channel)</description>
     <mitre>
       <id>T1059</id>
     </mitre>
