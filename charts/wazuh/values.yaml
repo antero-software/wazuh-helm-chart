@@ -531,3 +531,36 @@ wazuh:
     extraConf: ""
     localInternalOptions: |
       {{- include "wazuh.worker.local_internal_options" . | indent 2 -}}
+
+slackNotifier:
+  enabled: false
+
+  image:
+    repository: your-registry/wazuh-slack-notifier
+    tag: "1.0.0"
+    pullPolicy: IfNotPresent
+
+  replicas: 1
+
+  service:
+    type: ClusterIP
+    port: 8080
+
+  resources:
+    limits:
+      memory: 128Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi
+
+  config:
+    # Minimum Wazuh alert level to forward (1-15)
+    minAlertLevel: 7
+    # Slack webhook URL — used to create a Secret when existingSecret is empty
+    slackWebhookUrl: ""
+    # Name of an existing Secret containing the webhook URL
+    existingSecret: ""
+    secretKey: "webhook-url"
+
+  networkPolicy:
+    enabled: true
