@@ -61,7 +61,7 @@ server.xsrf.allowlist: ["/_opendistro/_security/saml/acs", "/_opendistro/_securi
     <jsonout_output>yes</jsonout_output>
     <alerts_log>yes</alerts_log>
     <logall>no</logall>
-    <logall_json>yes</logall_json>
+    <logall_json>no</logall_json>
     <email_notification>no</email_notification>
     <smtp_server>smtp.example.wazuh.com</smtp_server>
     <email_from>ossecm@example.wazuh.com</email_from>
@@ -1301,6 +1301,20 @@ compatibility.override_main_response_version: true
       <id>T1059</id>
     </mitre>
     <group>attack,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.7,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+</group>
+
+<group name="uninformative-logs-filter-rules,">
+ <rule id="120400" level="0">
+    <if_sid>100010</if_sid>
+    <field name="terminatingRuleId">geo-whitelist|ipv4-whitelist|whitelist-email-images</field>
+    <description>Filter uninformative-logs with WAF Rules IDs.</description>
+  </rule>
+  
+   <rule id="120401" level="0">
+    <if_sid>100010</if_sid>
+    <field name="httpRequest.uri">/api/broadcasting/auth|/favicon.ico|/api/connections|/api/user</field>
+    <description>Filter uninformative-logs with URI.</description>
   </rule>
 </group>
 {{- end }}
