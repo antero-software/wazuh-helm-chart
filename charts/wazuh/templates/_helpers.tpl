@@ -1307,13 +1307,13 @@ compatibility.override_main_response_version: true
 <group name="uninformative-logs-filter-rules,">
  <rule id="120400" level="0">
     <if_sid>100010</if_sid>
-    <field name="terminatingRuleId">geo-whitelist|ipv4-whitelist|whitelist-email-images</field>
+    <field name="terminatingRuleId">geo-whitelist|ipv4-whitelist|whitelist-email-images|ip-blacklist|starkmed-ipv4-whitelist|ruleset</field>
     <description>Filter uninformative-logs with WAF Rules IDs.</description>
   </rule>
   
-   <rule id="120401" level="0">
+  <rule id="120401" level="0">
     <if_sid>100010</if_sid>
-    <field name="httpRequest.uri">/api/broadcasting/auth|/favicon.ico|/api/connections|/api/user</field>
+    <field name="httpRequest.uri">/api/broadcasting/auth|/favicon.ico|/api/connections|/assets|/public-assets|/brand-logo</field>
     <description>Filter uninformative-logs with URI.</description>
   </rule>
 </group>
