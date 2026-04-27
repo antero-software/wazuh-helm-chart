@@ -416,7 +416,7 @@ wazuh_modules.debug=0
     <jsonout_output>yes</jsonout_output>
     <alerts_log>yes</alerts_log>
     <logall>no</logall>
-    <logall_json>yes</logall_json>
+    <logall_json>no</logall_json>
     <email_notification>no</email_notification>
     <smtp_server>smtp.example.wazuh.com</smtp_server>
     <email_from>ossecm@example.wazuh.com</email_from>
@@ -1104,7 +1104,7 @@ compatibility.override_main_response_version: true
   
   <rule id="120103" level="7">
     <if_sid>100010</if_sid>
-    <field name="httpRequest.headers">%3Cscript|%3C%2Fscript|script>|script%3E|SRC=javascript|IMG%20|iframe|onload|onerror</field>
+    <field name="httpRequest.headers">%3Cscript|%3C%2Fscript|script>|script%3E|%3Ciframe|%3C%2Fiframe|iframe>|iframe%3E|SRC=javascript|IMG%20|onload|onerror</field>
     <description>Possible XSS Attack. Payload in Request Headers.</description>
     <mitre>
       <id>T1059.007</id>
@@ -1267,7 +1267,7 @@ compatibility.override_main_response_version: true
   
   <rule id="120303" level="7">
     <if_sid>100010</if_sid>
-    <field name="httpRequest.headers">shell_exec|ls%20|Li8uLi8uLi8uLi8uLi8uLi9|serverInfo|getVersion|${jndi|http:|file%3a|%252F|%2F%2F|cat%20|ipconfig|netcat|%5C%5C|print%20</field>
+    <field name="httpRequest.headers">shell_exec|ls%20|Li8uLi8uLi8uLi8uLi8uLi9|serverInfo|getVersion|${jndi|file%3a|%252F|%2F%2F|cat%20|ipconfig|netcat|%5C%5C|print%20</field>
     <description>Possible Command injection attempt. Payload in Request Headers.</description>
     <mitre>
       <id>T1190</id>
@@ -1307,13 +1307,13 @@ compatibility.override_main_response_version: true
 <group name="uninformative-logs-filter-rules,">
  <rule id="120400" level="0">
     <if_sid>100010</if_sid>
-    <field name="terminatingRuleId">geo-whitelist|ipv4-whitelist|whitelist-email-images</field>
+    <field name="terminatingRuleId">geo-whitelist|ipv4-whitelist|whitelist-email-images|ip-blacklist|starkmed-ipv4-whitelist|ruleset</field>
     <description>Filter uninformative-logs with WAF Rules IDs.</description>
   </rule>
   
-   <rule id="120401" level="0">
+  <rule id="120401" level="0">
     <if_sid>100010</if_sid>
-    <field name="httpRequest.uri">/api/broadcasting/auth|/favicon.ico|/api/connections|/api/user</field>
+    <field name="httpRequest.uri">/api/broadcasting/auth|/favicon.ico|/api/connections|/assets|/public-assets|/brand-logo</field>
     <description>Filter uninformative-logs with URI.</description>
   </rule>
 </group>
