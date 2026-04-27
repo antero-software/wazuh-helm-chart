@@ -416,7 +416,7 @@ wazuh_modules.debug=0
     <jsonout_output>yes</jsonout_output>
     <alerts_log>yes</alerts_log>
     <logall>no</logall>
-    <logall_json>yes</logall_json>
+    <logall_json>no</logall_json>
     <email_notification>no</email_notification>
     <smtp_server>smtp.example.wazuh.com</smtp_server>
     <email_from>ossecm@example.wazuh.com</email_from>
