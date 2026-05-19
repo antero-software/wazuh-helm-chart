@@ -1031,10 +1031,14 @@ compatibility.override_main_response_version: true
   </rule>
 </group>
 
-<group name='samealerts'>
-   <rule id="110053" level="3" frequency="2" timeframe="300">
-        <if_matched_sid>5108</if_matched_sid>
-        <description>Muliple OOM Alerts from $(hostname)</description>
+<group name='suppressing-alerts'>
+   <rule id="110053" level="8">
+      <if_sid>5108</if_sid>
+      <description>System running out of memory. Availability of the system is in risk.</description>
+      <mitre>
+        <id>T1499</id>
+      </mitre>
+      <group>service_availability,pci_dss_10.6.1,gpg13_4.12,gdpr_IV_35.7.d,hipaa_164.312.b,nist_800_53_AU.6,tsc_CC7.2,tsc_CC7.3,</group>
     </rule>
     
     <rule id="110054" level="3">
