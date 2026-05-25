@@ -148,6 +148,12 @@ spec:
             - name: {{ include "wazuh.fullname" . }}-manager-worker
               mountPath: /var/lib/filebeat
               subPath: filebeat/var/lib/filebeat
+            {{- if .Values.wazuh.filebeatPipelineJson }}
+            - mountPath: /usr/share/filebeat/module/wazuh/alerts/ingest/pipeline.json
+              name: config
+              readOnly: true
+              subPath: pipeline.json
+            {{- end }}
           ports:
             - containerPort: {{ .Values.wazuh.worker.service.ports.agentEvents }}
               name: agents-events

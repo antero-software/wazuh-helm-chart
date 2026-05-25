@@ -34,3 +34,7 @@ data:
     {{- tpl .Values.wazuh.localRules . | indent 2 }}
   local_decoders.conf: |
     {{- tpl .Values.wazuh.localDecoders . | indent 2 }}
+  {{- if .Values.wazuh.filebeatPipelineJson }}
+  pipeline.json: |-
+{{ .Values.wazuh.filebeatPipelineJson | indent 4 }}
+  {{- end }}
