@@ -146,6 +146,12 @@ spec:
             - name: {{ include "wazuh.fullname" . }}-manager-master
               mountPath: /var/lib/filebeat
               subPath: filebeat/var/lib/filebeat
+            {{- if .Values.wazuh.filebeatPipelineJson }}
+            - mountPath: /usr/share/filebeat/module/wazuh/alerts/ingest/pipeline.json
+              name: config
+              readOnly: true
+              subPath: pipeline.json
+            {{- end }}
           ports:
             - containerPort: {{ .Values.wazuh.master.service.ports.registration }}
               name: registration
