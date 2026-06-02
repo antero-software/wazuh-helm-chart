@@ -1308,7 +1308,7 @@ compatibility.override_main_response_version: true
   </rule>
 </group>
 
-<group name="uninformative-logs-filter-rules,">
+<group name="uninformative-iage-logs-filter-rules,">
  <rule id="120400" level="0">
     <if_sid>100010</if_sid>
     <field name="terminatingRuleId">geo-whitelist|ipv4-whitelist|whitelist-email-images|ip-blacklist|starkmed-ipv4-whitelist|ruleset</field>
@@ -1318,6 +1318,21 @@ compatibility.override_main_response_version: true
   <rule id="120401" level="0">
     <if_sid>100010</if_sid>
     <field name="httpRequest.uri">/api/broadcasting/auth|/favicon.ico|/api/connections|/assets|/public-assets|/brand-logo</field>
+    <description>Filter uninformative-logs with URI.</description>
+  </rule>
+</group>
+
+<group name="uninformative-incept-logs-filter-rules,">
+ <rule id="130400" level="0">
+    <if_sid>100010</if_sid>
+    <field name="terminatingRuleId">ip-whitelist|restrict-to-whitelist|ip-blacklist|ruleset|aws-bot-control|rate-limit</field>
+    <description>Filter uninformative-logs with WAF Rules IDs.</description>
+  </rule>
+  
+  <rule id="130401" level="0">
+    <if_sid>100010</if_sid>
+    <field name="httpRequest.uri">/api/categories|/origination/login|/api/status/meilisearch|/api/broadcasting/auth|/api/status|/api/signature/envelop|/service-worker.js|/api/middle-office/document|/login|/web|/assets/images/
+</field>
     <description>Filter uninformative-logs with URI.</description>
   </rule>
 </group>
