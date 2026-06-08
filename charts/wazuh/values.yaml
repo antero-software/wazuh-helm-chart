@@ -548,6 +548,14 @@ wazuh:
           }
         },
         {
+          "script": {
+            "lang": "painless",
+            "if": "ctx?.data?.aws != null && (ctx.data.aws.accountId == null || ctx.data.aws.accountId == '')",
+            "source": "def arnFields = ['webaclId', 'recipientAccountId']; for (def f : arnFields) { if (ctx.data.containsKey(f) && ctx.data[f] != null && ctx.data[f].startsWith('arn:')) { def parts = ctx.data[f].splitOnToken(':'); if (parts.length >= 5) { ctx.data.aws.accountId = parts[4]; return; } } } if (ctx.data.aws.containsKey('aws_account_id') && ctx.data.aws.aws_account_id != null) { ctx.data.aws.accountId = ctx.data.aws.aws_account_id; }",
+            "ignore_failure": true
+          }
+        },
+        {
           "date_index_name": {
             "if" : "ctx?.location != 'Wazuh-AWS' ",
             "field": "timestamp",
