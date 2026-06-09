@@ -1331,9 +1331,16 @@ compatibility.override_main_response_version: true
   
   <rule id="130401" level="0">
     <if_sid>100010</if_sid>
-    <field name="httpRequest.uri">/api/categories|/origination/login|/api/status/meilisearch|/api/broadcasting/auth|/api/status|/api/signature/envelop|/service-worker.js|/api/middle-office/document|/login|/web|/assets/images/
+    <field name="httpRequest.uri">^/$|/robots.txt|/service-worker.js|/login|/web|/assets/images/|/favicon.ico
 </field>
-    <description>Filter uninformative-logs with URI.</description>
+    <description>Filter uninformative-logs for Public URI.</description>
+  </rule>
+
+  <rule id="130402" level="0">
+    <if_sid>100010</if_sid>
+    <field name="httpRequest.uri">/api/categories|/origination/login|/api/status/meilisearch|/api/broadcasting/auth|/api/status|/api/signature/envelop|/api/middle-office|/api/document|/api/plugins
+</field>
+    <description>Filter uninformative-logs for private URI.</description>
   </rule>
 </group>
 {{- end }}
